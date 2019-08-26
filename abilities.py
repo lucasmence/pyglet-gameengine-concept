@@ -1,0 +1,165 @@
+import pyglet
+import math
+
+from game import textures
+from game import collision
+from game import objects
+from game import floatingText
+
+class Missile(objects.Object):
+    def __init__(self, player, sprite, speed, owner):
+        super().__init__()
+        self.name = 'missile'
+        self.type = 3
+
+        self.moveX = 0
+        self.moveY = 0
+        self.range = 0
+        self.moveTypeX = 0
+        self.moveTypeY = 0
+        self.sprite = sprite
+        self.player = player
+        self.activated = False
+        self.speedX = 0
+        self.speedY = 0
+        self.angle = 0
+        self.owner = owner
+
+    def __del__(self):
+        self.activated = False
+        self.sprite.delete()
+
+class SkillLinear(objects.Object):
+    def __init__(self, caster, objectList):
+        super().__init__()
+        self.objectList = objectList
+        self.caster = caster
+        self.id = 0
+        self.name = 'skillLinear'
+        self.cooldownTime = 0
+        self.cooldown = 1
+        self.rangeMax = 500
+        self.speed = 500
+        self.damage = 1
+        self.energy = 1
+        self.scale = 1
+
+        self.missileStartPositionX = 50
+        self.missileStartPositionY = 50
+       
+        self.sound = None
+        self.texture = None
+        self.list = []
+    
+    def destroy(self):
+        for object in self.list:
+            object.range = self.rangeMax
+        
+    def cast(self, x, y):
+        if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
+            self.caster.energy -= self.energy
+            self.cooldownTime = 0
+
+            sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch)
+            sprite.update(scale=self.scale)
+            
+            object = Missile(self.caster.sprite, sprite, self.speed, self.caster.owner)
+            self.list.append(object)
+            self.objectList.append(object)
+
+            object.speedX = self.speed
+            object.speedY = self.speed
+
+            diferenceX = x - object.sprite.x
+            diferenceY = y - object.sprite.y
+
+            object.angle = collision.angle(x, object.sprite.x, y, object.sprite.y)
+
+            if diferenceX < 0:
+                diferenceX = diferenceX * -1
+            if diferenceY < 0:
+                diferenceY = diferenceY * -1
+
+            if diferenceX > diferenceY:
+                object.speedY = object.speedY * (diferenceY/diferenceX)
+            elif diferenceX < diferenceY:
+                object.speedX = object.speedX * (diferenceX/diferenceY)
+            
+            if (object.sprite.x < x):
+                object.moveTypeX = 0
+            if (object.sprite.x > x):
+                object.moveTypeX = 1
+
+            if (object.sprite.y < y):
+                object.moveTypeY = 0
+            if (object.sprite.y > y):
+                object.moveTypeY = 1      
+
+            self.sound.play()
+            object.activated = True
+            return False
+        else:
+            return True
+        
+    def loop(self, dt, units):
+        for object in self.list:
+            if (object.activated == True):
+
+                if object.moveTypeX == 1:
+                    object.sprite.x -= object.speedX * dt      
+                else:
+                    object.sprite.x += object.speedX * dt  
+                
+                if object.moveTypeY == 1:
+                    object.sprite.y -= object.speedY * dt 
+                else:
+                    object.sprite.y += object.speedY * dt 
+
+                distanceX = (object.speedX * dt)
+                distanceY = (object.speedY * dt)
+
+                object.range += math.sqrt( ( distanceY * distanceY ) + ( distanceX  * distanceX ) )
+
+                colideValue = collision.collisionObject(object, object.angle, units)
+
+                if (colideValue != None):
+                    if isinstance(colideValue, int):
+                        if colideValue == 1:
+                            object.range = self.rangeMax
+                    elif colideValue.health > 0:
+                        object.range = self.rangeMax
+                        damageValue = self.damage * (1 - (colideValue.armor / 100))
+                        colideValue.health -= damageValue
+                        useCurrentText = False
+                        for objectText in self.objectList:
+                            if objectText.type == 30: 
+                                if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 30:
+                                    useCurrentText = True
+                                    objectText.text.text = str(int(objectText.text.text) + int(damageValue))
+                        if useCurrentText == False:
+                            textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0)
+                            self.objectList.append(textDamage)
+
+
+                if (object.range >= self.rangeMax):
+                    self.list.remove(object)
+                    self.objectList.remove(object)
+                    del object
+            
+        self.cooldownTime += dt 
+
+
+class Shuriken(SkillLinear):
+    def __init__(self, caster, objectList):
+        super().__init__(caster, objectList)
+
+        self.name = 'shuriken'
+        self.cooldown = 2
+        self.rangeMax = 700
+        self.speed = 500
+        self.damage = 3
+        self.energy = 2
+        self.scale = 0.50
+       
+        self.sound = pyglet.media.load('game/sounds/shuriken.wav', streaming=False) 
+        self.texture = textures.texture_load('game/sprites/ninja-shuriken-25x.png', 1, 4, 25, 25, 0.02, True)
