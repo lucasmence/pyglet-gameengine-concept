@@ -133,9 +133,11 @@ class SkillLinear(objects.Object):
                         useCurrentText = False
                         for objectText in self.objectList:
                             if objectText.type == 30: 
-                                if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 30:
+                                if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50:
                                     useCurrentText = True
                                     objectText.text.text = str(int(objectText.text.text) + int(damageValue))
+                                    objectText.opacity = 0
+                                    objectText.text.y = objectText.unit.y
                         if useCurrentText == False:
                             textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0)
                             self.objectList.append(textDamage)
