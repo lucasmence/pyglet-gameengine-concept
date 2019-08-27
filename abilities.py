@@ -30,14 +30,14 @@ class Missile(objects.Object):
         self.sprite.delete()
 
 class SkillLinear(objects.Object):
-    def __init__(self, caster, objectList):
+    def __init__(self, caster, manager):
         super().__init__()
-        self.objectList = objectList
+        self.manager = manager
         self.caster = caster
         self.id = 0
         self.name = 'skillLinear'
-        self.cooldownTime = 0
         self.cooldown = 1
+        self.cooldownTime = self.cooldown 
         self.rangeMax = 500
         self.speed = 500
         self.damage = 1
@@ -65,7 +65,7 @@ class SkillLinear(objects.Object):
             
             object = Missile(self.caster.sprite, sprite, self.speed, self.caster.owner)
             self.list.append(object)
-            self.objectList.append(object)
+            self.manager.missiles.append(object)
 
             object.speedX = self.speed
             object.speedY = self.speed
@@ -101,7 +101,7 @@ class SkillLinear(objects.Object):
         else:
             return True
         
-    def loop(self, dt, units):
+    def loop(self, dt):
         for object in self.list:
             if (object.activated == True):
 
@@ -120,7 +120,7 @@ class SkillLinear(objects.Object):
 
                 object.range += math.sqrt( ( distanceY * distanceY ) + ( distanceX  * distanceX ) )
 
-                colideValue = collision.collisionObject(object, object.angle, units)
+                colideValue = collision.collisionObject(object, object.angle, self.manager)
 
                 if (colideValue != None):
                     if isinstance(colideValue, int):
@@ -131,32 +131,33 @@ class SkillLinear(objects.Object):
                         damageValue = self.damage * (1 - (colideValue.armor / 100))
                         colideValue.health -= damageValue
                         useCurrentText = False
-                        for objectText in self.objectList:
+                        for objectText in self.manager.floatingTexts:
                             if objectText.type == 30: 
                                 if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50:
                                     useCurrentText = True
-                                    objectText.text.text = str(int(objectText.text.text) + int(damageValue))
+                                    objectText.text.text = str(int(objectText.text.text) + int(round(damageValue)))
                                     objectText.opacity = 0
-                                    objectText.text.y = objectText.unit.y
+                                    objectText.text.y = objectText.unit.sprite.y
                         if useCurrentText == False:
                             textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0)
-                            self.objectList.append(textDamage)
+                            self.manager.floatingTexts.append(textDamage)
 
 
                 if (object.range >= self.rangeMax):
                     self.list.remove(object)
-                    self.objectList.remove(object)
+                    self.manager.missiles.remove(object)
                     del object
             
         self.cooldownTime += dt 
 
 
 class Shuriken(SkillLinear):
-    def __init__(self, caster, objectList):
-        super().__init__(caster, objectList)
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
 
         self.name = 'shuriken'
         self.cooldown = 2
+        self.cooldownTime = self.cooldown
         self.rangeMax = 700
         self.speed = 500
         self.damage = 3

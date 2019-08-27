@@ -9,14 +9,14 @@ from game import collision
 from game import objects
 
 class Unit(objects.Object):
-    def __init__(self, mainBatch, positionX, positionY, owner, objectList):
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):
         super().__init__()
         self.texture = textures.texture_load('game/sprites/ninja-red.png', 1, 2, 100, 100, 0.5, True)
         self.sprite = pyglet.sprite.Sprite(self.texture, x=positionX, y=positionY, batch=mainBatch)
         self.animationAttack = None
         self.animationTime = 0
         self.animationAttackTime = 0.30
-        self.objectList = objectList
+        self.manager = manager
         self.batch = mainBatch
         self.name = 'unit'
         self.owner = owner
@@ -135,22 +135,22 @@ class Unit(objects.Object):
                     self.sprite.image = self.animationAttack
                     self.animationTime = 0                
 
-    def update(self, dt, units):
+    def update(self, dt):
         if (self.alive == True):
             if (self.attack != None):
-                self.attack.loop(dt, units)
+                self.attack.loop(dt)
             
             if (self.skillQ != None):
-                self.skillQ.loop(dt, units)
+                self.skillQ.loop(dt)
             
             if (self.skillW != None):
-                self.skillW.loop(dt, units)
+                self.skillW.loop(dt)
             
             if (self.skillE != None):
-                self.skillE.loop(dt, units)
+                self.skillE.loop(dt)
             
             if (self.skillR != None):
-                self.skillR.loop(dt, units)
+                self.skillR.loop(dt)
 
             self.health += self.healthRegeneration * dt
             self.energy += self.energyRegeneration * dt
@@ -169,7 +169,7 @@ class Unit(objects.Object):
             self.bar.update(self.health, self.healthMax)
             
             if (self.moving == True):    
-                if not (collision.collisionObject(self, self.angle, units)):
+                if not (collision.collisionObject(self, self.angle, self.manager)):
                     movementX = self.movementSpeed
                     movementY = self.movementSpeed
 
@@ -205,8 +205,8 @@ class Unit(objects.Object):
                 self.kill()
 
 class Ninja(Unit):
-    def __init__(self, mainBatch, positionX, positionY, owner, objectList):    
-        super().__init__(mainBatch, positionX, positionY, owner, objectList)
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
+        super().__init__(mainBatch, positionX, positionY, owner, manager)
         self.texture = textures.texture_load('game/sprites/ninja-red.png', 1, 2, 100, 100, 0.5, True)
         self.sprite.image = self.texture
         self.animationAttack = self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-red.png').get_region(x=200,y=0,height=100,width=100)], 0.5, True)
@@ -219,13 +219,13 @@ class Ninja(Unit):
         self.energyMax = 10 
         self.armor = 10
         self.movementSpeed = 120
-        self.skillQ = abilities.Shuriken(self, self.objectList)
-        self.attack = attackTypes.Slash(self, self.objectList)  
+        self.skillQ = abilities.Shuriken(self, self.manager)
+        self.attack = attackTypes.Slash(self, self.manager)  
 
 
 class NinjaMinion(Ninja):  
-    def __init__(self, mainBatch, positionX, positionY, owner, objectList):    
-        super().__init__(mainBatch, positionX, positionY, owner, objectList)
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
+        super().__init__(mainBatch, positionX, positionY, owner, manager)
         self.texture = textures.texture_load('game/sprites/ninja-gray.png', 1, 2, 100, 100, 0.5, True)
         self.sprite.image = self.texture
         self.animationAttack = self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=200,y=0,height=100,width=100)], 0.5, True)
@@ -239,10 +239,10 @@ class NinjaMinion(Ninja):
         self.movementSpeed = 50
         self.minimumRange = 100
     
-    def update(self, dt, units):
+    def update(self, dt):
         self.moving = True
         distance = collision.distance(self.diferenceX, self.diferenceY)
-        super().update(dt, units)
+        super().update(dt)
 
         if (collision.distance(self.diferenceX, self.diferenceY) <= 120):
             self.cast(self.A, self.moveX, self.moveY)  

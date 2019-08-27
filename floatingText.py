@@ -14,7 +14,7 @@ class FloatingText(objects.Object):
         
         self.valueType = valueType
         self.unit = unit
-        self.text = pyglet.text.Label(str(int(value)), x=self.unit.sprite.x + random.randint(0,self.unit.sprite.width), y=self.unit.sprite.y + random.randint(0,self.unit.sprite.height), batch=mainBatch)
+        self.text = pyglet.text.Label(str(int(value)), x=self.unit.sprite.x + random.randint(0,self.unit.sprite.width), y=self.unit.sprite.y + random.randint(0,self.unit.sprite.height), batch=mainBatch, group=pyglet.graphics.OrderedGroup(2))
         self.text.font_name = 'Sprite Comic'
         self.text.font_size = 8
         self.opacity = 0

@@ -10,9 +10,9 @@ def angle(x1, x2, y1, y2):
         angleValue += 360
     return angleValue
 
-def collision(entity, angleUnit, list):
+def collision(entity, angleUnit, manager):
 
-    for item in list:
+    for item in manager.units:
         if item.x < entity.x + entity.width and item.x + item.width > entity.x \
                 and item.y < entity.y + entity.height and item.height + item.y > entity.y:
 
@@ -23,28 +23,29 @@ def collision(entity, angleUnit, list):
             if angleDiference <= 45:
                 return True 
 
-def collisionObject(entity, angleUnit, list):
+def collisionObject(entity, angleUnit, manager):
 
-    for item in list:
-        if item != entity:
-            if item.type == 2:
-                if item.sprite.x < entity.sprite.x + entity.sprite.width and item.sprite.x + item.sprite.width > entity.sprite.x \
-                        and item.sprite.y < entity.sprite.y + entity.sprite.height and item.sprite.height + item.sprite.y > entity.sprite.y:
+    for item in manager.doodads:
+        if item.sprite.x < entity.sprite.x + entity.sprite.width and item.sprite.x + item.sprite.width > entity.sprite.x \
+                and item.sprite.y < entity.sprite.y + entity.sprite.height and item.sprite.height + item.sprite.y > entity.sprite.y:
 
-                    if (entity.type == 1):
-                        angleDiference = angle(item.sprite.y, entity.sprite.y, item.sprite.x, entity.sprite.x) - angleUnit
+            if (entity.type == 1):
+                angleDiference = angle(item.sprite.y, entity.sprite.y, item.sprite.x, entity.sprite.x) - angleUnit
 
-                        if angleDiference < 0:
-                            angleDiference = angleDiference * -1              
-                        if angleDiference <= 35:
-                            return 1 
-                    elif (entity.type == 3):
-                        return 1
-            elif (item.type == 1) and (entity.type == 3) and (item.owner != entity.owner):
-                if item.sprite.x < entity.sprite.x + (entity.sprite.width * 0.7) and item.sprite.x + (item.sprite.width * 0.7) > entity.sprite.x \
-                        and item.sprite.y < entity.sprite.y + (entity.sprite.height * 0.7) and (item.sprite.height * 0.7) + item.sprite.y > entity.sprite.y:
-                    return item
-            elif (item.type == 1) and (entity.type == 1) :
+                if angleDiference < 0:
+                    angleDiference = angleDiference * -1              
+                if angleDiference <= 35:
+                    return 1 
+            elif (entity.type == 3):
+                return 1
+    for item in manager.units:
+        if (item.owner != entity.owner):
+
+            if item.sprite.x < entity.sprite.x + (entity.sprite.width * 0.7) and item.sprite.x + (item.sprite.width * 0.7) > entity.sprite.x \
+                    and item.sprite.y < entity.sprite.y + (entity.sprite.height * 0.7) and (item.sprite.height * 0.7) + item.sprite.y > entity.sprite.y:
+                return item
+
+            if (item.type == 1) and (entity.type == 1):
                 distanceX = item.sprite.x - entity.sprite.x
                 distanceY = item.sprite.y - entity.sprite.y
 
