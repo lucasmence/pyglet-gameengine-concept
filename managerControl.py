@@ -34,9 +34,9 @@ class Manager():
                     icon.update(hudObject.player.skillR.cooldownTime, hudObject.player.skillR.cooldown)
             for bar in hudObject.bars:
                 if bar.barType == 0:
-                    bar.update(hudObject.player.health, hudObject.player.healthMax)
+                    bar.update(hudObject.player.health, hudObject.player.healthMax + hudObject.player.bonus.healthMax)
                 else:
-                    bar.update(hudObject.player.energy, hudObject.player.energyMax)
+                    bar.update(hudObject.player.energy, hudObject.player.energyMax + hudObject.player.bonus.energyMax)
 
         for floatingTextObject in self.floatingTexts:
             if floatingTextObject.opacity < 100:

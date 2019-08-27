@@ -8,6 +8,18 @@ from game import attackTypes
 from game import collision
 from game import objects
 
+class Bonus():
+    def __init__(self):
+        self.attack = 0
+        self.movementSpeed = 0
+        self.armor = 0
+        self.healthMax = 0
+        self.energyMax = 0
+        self.healthRegeneration = 0
+        self.energyRegeneration = 0
+        self.critical = 0
+        self.attackSpeed = 0
+
 class Unit(objects.Object):
     def __init__(self, mainBatch, positionX, positionY, owner, manager):
         super().__init__()
@@ -29,6 +41,8 @@ class Unit(objects.Object):
         self.energy = self.energyMax 
         self.energyRegeneration = 0.50
         self.armor = 0 
+        self.critical = 0.10
+        self.bonus = Bonus()
         self.angle = 0
         self.diferenceX = 0
         self.diferenceY = 0
@@ -44,6 +58,7 @@ class Unit(objects.Object):
         self.skillR = None
         self.attack = None  
         self.alive = True
+        self.paused = False
         self.A = 0
         self.Q = 1
         self.W = 2
@@ -84,6 +99,7 @@ class Unit(objects.Object):
         self.energy = 0
         self.energyRegeneration = 0
         self.alive = False   
+        self.paused = False
         self.sprite.delete()
 
     def on_mouse_press(self, x, y, button, modifiers):    
@@ -110,7 +126,7 @@ class Unit(objects.Object):
             self.cast(self.R, mouseX, mouseY)
  
     def cast(self, type, x ,y):
-        if (self.alive == True):
+        if (self.alive == True and self.paused == False):
             
             if type == self.A and self.attack != None:
                 self.moving = self.attack.cast(x, y, self.attackSpeed)   
@@ -152,13 +168,13 @@ class Unit(objects.Object):
             if (self.skillR != None):
                 self.skillR.loop(dt)
 
-            self.health += self.healthRegeneration * dt
-            self.energy += self.energyRegeneration * dt
+            self.health += (self.healthRegeneration + self.bonus.healthRegeneration) * dt
+            self.energy += (self.energyRegeneration + self.bonus.energyRegeneration) * dt
 
-            if (self.health > self.healthMax):
-                self.health = self.healthMax
-            if (self.energy > self.energyMax):
-                self.energy = self.energyMax
+            if (self.health > (self.healthMax + self.bonus.healthMax)):
+                self.health = (self.healthMax + self.bonus.healthMax)
+            if (self.energy > (self.energyMax + self.bonus.energyMax)):
+                self.energy = (self.energyMax + self.bonus.energyMax)
             
             if self.animationTime > self.animationAttackTime:
                 self.animationTime = self.animationAttackTime
@@ -166,12 +182,12 @@ class Unit(objects.Object):
             else:
                 self.animationTime += 1 * dt
 
-            self.bar.update(self.health, self.healthMax)
+            self.bar.update(self.health, self.healthMax + self.bonus.healthMax)
             
-            if (self.moving == True):    
+            if (self.moving == True and self.paused == False):    
                 if not (collision.collisionObject(self, self.angle, self.manager)):
-                    movementX = self.movementSpeed
-                    movementY = self.movementSpeed
+                    movementX = self.movementSpeed + self.bonus.movementSpeed
+                    movementY = self.movementSpeed + self.bonus.movementSpeed
 
                     self.diferenceX = self.moveX - self.sprite.x
                     self.diferenceY = self.moveY - self.sprite.y
@@ -201,6 +217,12 @@ class Unit(objects.Object):
                         self.moving = False              
                 else:
                     self.moving = False
+
+            elif (self.paused == True):
+                self.moving = False
+                self.moveX = self.sprite.x
+                self.moveX = self.sprite.y
+
             if (self.health <= 0):
                 self.kill()
 
@@ -214,13 +236,13 @@ class Ninja(Unit):
         self.name = 'ninja'
         self.attackSpeed = 0.3
         self.healthMax = 50
-        self.health = self.healthMax
         self.healthRegeneration = 0.2
         self.energyMax = 10 
         self.armor = 10
         self.movementSpeed = 120
         self.skillQ = abilities.Shuriken(self, self.manager)
-        self.attack = attackTypes.Slash(self, self.manager)  
+        self.attack = attackTypes.Slash(self, self.manager) 
+        self.health = self.healthMax + self.bonus.healthMax
 
 
 class NinjaMinion(Ninja):  

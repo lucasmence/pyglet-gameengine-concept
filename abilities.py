@@ -128,7 +128,7 @@ class SkillLinear(objects.Object):
                             object.range = self.rangeMax
                     elif colideValue.health > 0:
                         object.range = self.rangeMax
-                        damageValue = self.damage * (1 - (colideValue.armor / 100))
+                        damageValue = self.damage * (1 - ((colideValue.armor + colideValue.bonus.armor)/ 100))
                         colideValue.health -= damageValue
                         useCurrentText = False
                         for objectText in self.manager.floatingTexts:
