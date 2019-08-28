@@ -190,14 +190,11 @@ class Unit(objects.Object):
 
     def on_mouse_press(self, x, y, button, modifiers):    
         if (button == 4):  
-            #corrigi isso amanha
-            #self.angle = collision.angle(y, self.sprite.y, x, self.sprite.x)
             self.angle = collision.angle(x, self.sprite.x, y, self.sprite.y)
             self.moveX = x
             self.moveY = y
             
             self.moving = True
-            print(self.angle)
 
         if (button == 1):  
             self.cast(self.A, x, y)
@@ -298,9 +295,11 @@ class Unit(objects.Object):
                         if self.sprite.y < self.moveY:
                             self.sprite.y += movementY * dt  
                     else:
-                        self.moving = False              
+                        self.moving = False  
+                        self.animation.animate('stand')             
                 else:
                     self.moving = False
+                    self.animation.animate('stand') 
 
             elif (self.paused == True):
                 self.moving = False
@@ -336,7 +335,7 @@ class Ninja(Unit):
         for animation in self.animation.spriteWalk:
             self.animation.timeSpriteWalk.append(0.05)
 
-        self.sprite.update(scale=1)
+        self.sprite.update(scale=1.00)
         self.name = 'ninja'
         self.attackSpeed = 0.3
         self.healthMax = 50

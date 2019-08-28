@@ -100,10 +100,10 @@ def overworld_units_spawn():
     manager.units.append(player)    
 
     enemiesList = []
-    for index in range(3):
-        enemy = units.NinjaMinion(mainBatch, 500 + index * 50, 400 + index * 50, 13, manager)
-        enemiesList.append(enemy)
-        manager.units.append(enemy)
+    #for index in range(3):
+    #    enemy = units.NinjaMinion(mainBatch, 500 + index * 50, 400 + index * 50, 13, manager)
+    #    enemiesList.append(enemy)
+    #    manager.units.append(enemy)
 
 def initialization():
 
@@ -171,7 +171,7 @@ def eventSkills(dt):
         manager.update(dt)
 
         for enemy in enemiesList:
-            enemy.angle = collision.angle(player.sprite.y, enemy.sprite.y, player.sprite.x, enemy.sprite.x)
+            enemy.angle = collision.angle(player.sprite.x, enemy.sprite.x, player.sprite.y, enemy.sprite.y)
             enemy.moveX = player.sprite.x
             enemy.moveY = player.sprite.y
 

@@ -75,6 +75,11 @@ class SkillLinear(objects.Object):
 
             object.angle = collision.angle(x, object.sprite.x, y, object.sprite.y)
 
+            sprite.image.anchor_x = sprite.width / 2
+            sprite.image.anchor_y = sprite.height / 2
+
+            sprite.rotation = object.angle *-1
+
             if diferenceX < 0:
                 diferenceX = diferenceX * -1
             if diferenceY < 0:

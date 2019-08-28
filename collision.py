@@ -10,19 +10,6 @@ def angle(x1, x2, y1, y2):
         angleValue += 360
     return angleValue
 
-def collision(entity, angleUnit, manager):
-
-    for item in manager.units:
-        if item.x < entity.x + entity.width and item.x + item.width > entity.x \
-                and item.y < entity.y + entity.height and item.height + item.y > entity.y:
-
-            angleDiference = angle(item.x, entity.x, item.y, entity.y) - angleUnit
-            if angleDiference < 0:
-                angleDiference = angleDiference * -1
-
-            if angleDiference <= 45:
-                return True 
-
 def collisionObject(entity, angleUnit, manager):
 
     for item in manager.doodads:
@@ -30,11 +17,12 @@ def collisionObject(entity, angleUnit, manager):
                 and item.sprite.y < entity.sprite.y + entity.sprite.height and item.sprite.height + item.sprite.y > entity.sprite.y:
 
             if (entity.type == 1):
-                angleDiference = angle(item.sprite.y, entity.sprite.y, item.sprite.x, entity.sprite.x) - angleUnit
+                angleDiference = angle(item.sprite.x, entity.sprite.x, item.sprite.y, entity.sprite.y) - angleUnit
 
                 if angleDiference < 0:
-                    angleDiference = angleDiference * -1              
-                if angleDiference <= 35:
+                    angleDiference = angleDiference * -1             
+                    
+                if angleDiference <= 60:
                     return 1 
             elif (entity.type == 3):
                 return 1
@@ -57,7 +45,7 @@ def collisionObject(entity, angleUnit, manager):
                 distanceTotal = distance(distanceX, distanceY)
 
                 if distanceTotal <= 50:
-                    angleDiference = angle(item.sprite.y, entity.sprite.y, item.sprite.x, entity.sprite.x) - angleUnit
+                    angleDiference = angle(item.sprite.x, entity.sprite.x, item.sprite.y, entity.sprite.y) - angleUnit
 
                     if angleDiference < 0:
                         angleDiference = angleDiference * -1              
