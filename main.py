@@ -8,6 +8,7 @@ from game import units
 from game import doodads
 from game import hud
 from game import managerControl
+from game import collision
 
 def circle(x, y, radius, dt):
     global testBlock
@@ -170,6 +171,7 @@ def eventSkills(dt):
         manager.update(dt)
 
         for enemy in enemiesList:
+            enemy.angle = collision.angle(player.sprite.y, enemy.sprite.y, player.sprite.x, enemy.sprite.x)
             enemy.moveX = player.sprite.x
             enemy.moveY = player.sprite.y
 

@@ -44,8 +44,8 @@ class SkillLinear(objects.Object):
         self.energy = 1
         self.scale = 1
 
-        self.missileStartPositionX = 50
-        self.missileStartPositionY = 50
+        self.missileStartPositionX = 25
+        self.missileStartPositionY = 25
        
         self.sound = None
         self.texture = None
