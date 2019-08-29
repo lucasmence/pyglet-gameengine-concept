@@ -15,12 +15,14 @@ class Slash(abilities.Shuriken):
         self.speed = 500
         self.damage = 1
         self.energy = 0
+        self.wave = True
+        self.singleTarget = True
 
         self.missileStartPositionX = 25
         self.missileStartPositionY = 25
 
         self.sound = pyglet.media.load('game/sounds/slash.wav', streaming=False) 
-        self.texture = pyglet.image.load('game/sprites/characters/slash.png')
+        self.texture = pyglet.image.load('game/sprites/characters/slash2.png')
         self.scale = 0.75
 
         

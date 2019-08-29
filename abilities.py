@@ -24,6 +24,8 @@ class Missile(objects.Object):
         self.speedY = 0
         self.angle = 0
         self.owner = owner
+        self.targets = []
+        self.damageDealt = False
 
     def __del__(self):
         self.activated = False
@@ -43,6 +45,8 @@ class SkillLinear(objects.Object):
         self.damage = 1
         self.energy = 1
         self.scale = 1
+        self.wave = False
+        self.singleTarget = True
 
         self.missileStartPositionX = 25
         self.missileStartPositionY = 25
@@ -60,7 +64,7 @@ class SkillLinear(objects.Object):
             self.caster.energy -= self.energy
             self.cooldownTime = 0
 
-            sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch)
+            sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
             sprite.update(scale=self.scale)
             
             object = Missile(self.caster.sprite, sprite, self.speed, self.caster.owner)
@@ -131,21 +135,26 @@ class SkillLinear(objects.Object):
                     if isinstance(colideValue, int):
                         if colideValue == 1:
                             object.range = self.rangeMax
-                    elif colideValue.health > 0:
-                        object.range = self.rangeMax
-                        damageValue = self.damage * (1 - ((colideValue.armor + colideValue.bonus.armor)/ 100))
-                        colideValue.health -= damageValue
-                        useCurrentText = False
-                        for objectText in self.manager.floatingTexts:
-                            if objectText.type == 30: 
-                                if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50:
-                                    useCurrentText = True
-                                    objectText.text.text = str(int(objectText.text.text) + int(round(damageValue)))
-                                    objectText.opacity = 0
-                                    objectText.text.y = objectText.unit.sprite.y
-                        if useCurrentText == False:
-                            textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0)
-                            self.manager.floatingTexts.append(textDamage)
+                    elif (colideValue.health > 0) and (not colideValue in object.targets):
+                        object.targets.append(colideValue)
+                        if self.wave == False:
+                            object.range = self.rangeMax
+                        
+                        if (self.singleTarget == True and object.damageDealt == False) or (self.singleTarget == False):
+                            object.damageDealt = True
+                            damageValue = self.damage * (1 - ((colideValue.armor + colideValue.bonus.armor)/ 100))
+                            colideValue.health -= damageValue
+                            useCurrentText = False
+                            for objectText in self.manager.floatingTexts:
+                                if objectText.type == 30: 
+                                    if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50:
+                                        useCurrentText = True
+                                        objectText.text.text = str(int(objectText.text.text) + int(round(damageValue)))
+                                        objectText.opacity = 0
+                                        objectText.text.y = objectText.unit.sprite.y
+                            if useCurrentText == False:
+                                textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0)
+                                self.manager.floatingTexts.append(textDamage)
 
 
                 if (object.range >= self.rangeMax):
