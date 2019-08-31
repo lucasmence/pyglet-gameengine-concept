@@ -69,8 +69,9 @@ class AnimationManager():
         
     def update(self, dt):
         if self.animationExecute.update(dt) == True:
+            self.currentAnimation = ''
             self.animate('stand')
-
+        
 class Bonus():
     def __init__(self):
         self.attack = 0
@@ -81,17 +82,15 @@ class Bonus():
         self.healthRegeneration = 0
         self.energyRegeneration = 0
         self.critical = 0
-        self.attackSpeed = 0
+        self.attackSpeed = 0    
 
 class Unit(objects.Object):
     def __init__(self, mainBatch, positionX, positionY, owner, manager):
         super().__init__()
         self.texture = textures.texture_load('game/sprites/ninja-red.png', 1, 2, 100, 100, 0.5, True)
         self.sprite = pyglet.sprite.Sprite(self.texture, x=positionX, y=positionY, batch=mainBatch)
-        self.animationAttack = None
-        self.animationTime = 0
-        self.animationAttackTime = 0.30
-        self.animation = AnimationManager(None)
+        self.animation = AnimationManager(self.sprite)
+        self.specialEffect = False
         self.manager = manager
         self.batch = mainBatch
         self.name = 'unit'
@@ -130,8 +129,9 @@ class Unit(objects.Object):
         self.R = 4
     
     def kill(self):
-        self.bar.sprite.delete()
-        del self.bar
+        if self.specialEffect == False:
+            self.bar.sprite.delete()
+            del self.bar
 
         if (self.attack != None):
             for object in self.attack.list:
@@ -213,7 +213,7 @@ class Unit(objects.Object):
 
                 self.animation.animate('attack')                
 
-    def update(self, dt):
+    def update(self, dt):  
         if (self.alive == True):
             self.animation.update(dt)
             if (self.attack != None):
@@ -239,7 +239,8 @@ class Unit(objects.Object):
             if (self.energy > (self.energyMax + self.bonus.energyMax)):
                 self.energy = (self.energyMax + self.bonus.energyMax)
 
-            self.bar.update(self.health, self.healthMax + self.bonus.healthMax)
+            if self.specialEffect == False:
+                self.bar.update(self.health, self.healthMax + self.bonus.healthMax)
             
             if (self.moving == True and self.paused == False):    
                 if not (collision.collisionObject(self, self.angle, self.manager)):
@@ -282,23 +283,108 @@ class Unit(objects.Object):
             elif (self.paused == True):
                 self.moving = False
                 self.moveX = self.sprite.x
-                self.moveX = self.sprite.y
-                self.animation.animate('stand') 
+                self.moveX = self.sprite.y 
 
             if (self.health <= 0):
                 self.kill()
 
+class NinjaDeathEffect(Unit):
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
+        super().__init__(mainBatch, positionX, positionY, owner, manager)
+        self.specialEffect = True
+        self.name = 'specialEffect'
+
+        spriteY = 0
+
+        self.animation.animationList.append(AnimationSprite([], [], 'stand'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=7,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.30)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=71,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.30)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=135,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.30)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=200,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.30)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=265,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.30)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=328,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(1)
+
+        self.totalTime = 0
+
+        for time in self.animation.animationList[len(self.animation.animationList)-1].time:
+            self.totalTime += time 
+
+        self.bar.sprite.delete()
+        del self.bar
+
+    def update(self, dt):
+        super().update(dt)
+
+        self.totalTime -= dt
+
+        if self.totalTime <= 0:
+            self.alive = False
+
+class SkeletonWarriorDeathEffect(Unit):
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
+        super().__init__(mainBatch, positionX, positionY, owner, manager)
+        self.specialEffect = True
+        self.name = 'specialEffect'
+
+        spriteY = 0
+
+        self.animation.animationList.append(AnimationSprite([], [], 'stand'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=7,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.30)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=71,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=135,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=200,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=265,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=328,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(1)
+
+        self.totalTime = 0
+
+        for time in self.animation.animationList[len(self.animation.animationList)-1].time:
+            self.totalTime += time 
+
+        self.bar.sprite.delete()
+        del self.bar
+
+    def update(self, dt):
+        super().update(dt)
+
+        self.totalTime -= dt
+
+        if self.totalTime <= 0:
+            self.alive = False
+                  
 class Ninja(Unit):
     def __init__(self, mainBatch, positionX, positionY, owner, manager):    
         super().__init__(mainBatch, positionX, positionY, owner, manager)
-        self.texture = textures.texture_load('game/sprites/characters/anska-move.png', 1, 1, 50, 50, 0.5, True)
-        self.sprite.image = self.texture
-
-        self.animation.sprite = self.sprite
+        
+        spriteY = 1090
 
         self.animation.animationList.append(AnimationSprite([], [], 'stand'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=6,y=spriteY,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=70,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=134,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=198,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=262,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=326,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=390,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
 
         self.animation.animationList.append(AnimationSprite([], [], 'walk'))
         self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=65,y=0,height=50,width=50)], 1, True))
@@ -336,29 +422,47 @@ class Ninja(Unit):
         self.attack = attackTypes.Slash(self, self.manager) 
         self.health = self.healthMax + self.bonus.healthMax
 
+    def kill(self):
+        if self.name == 'ninja':
+            deathEffect = NinjaDeathEffect(self.sprite.batch, self.sprite.x,self.sprite.y, self.owner, self.manager)
+            self.manager.specialEffects.append(deathEffect)
+        super().kill()
+
 
 class NinjaMinion(Ninja):  
     def __init__(self, mainBatch, positionX, positionY, owner, manager):    
         super().__init__(mainBatch, positionX, positionY, owner, manager)
-        self.texture = textures.texture_load('game/sprites/ninja-gray.png', 1, 2, 100, 100, 0.5, True)
-        self.sprite.update(scale=0.5)
-        self.sprite.image = self.texture
 
-        self.animation.sprite = self.sprite
+        spriteY = 700
 
         self.animation.animationList.append(AnimationSprite([], [], 'stand'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=0,y=0,height=100,width=100)], 1, True))
-        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=7,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
 
         self.animation.animationList.append(AnimationSprite([], [], 'walk'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=100,y=0,height=100,width=100)], 1, True))
-        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=0,y=0,height=100,width=100)], 1, True))
-        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=7,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=71,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=135,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=200,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=263,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=328,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=392,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=455,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=520,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
 
         self.animation.animationList.append(AnimationSprite([], [], 'attack'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=200,y=0,height=100,width=100)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=323,y=435,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
+
 
         self.name = 'ninjaMinion'
         self.attackSpeed = 1
@@ -379,7 +483,12 @@ class NinjaMinion(Ninja):
             self.cast(self.A, self.moveX, self.moveY)  
             
         if (collision.distance(self.diferenceX, self.diferenceY) >= 150):
-            self.cast(self.Q, self.moveX, self.moveY) 
+            self.cast(self.Q, self.moveX, self.moveY)    
+
+    def kill(self):
+        deathEffect = SkeletonWarriorDeathEffect(self.sprite.batch, self.sprite.x,self.sprite.y, self.owner, self.manager)
+        self.manager.specialEffects.append(deathEffect)
+        super().kill()  
 
 class Bar():
     def __init__(self, mainBatch, unit):
