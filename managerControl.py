@@ -13,6 +13,7 @@ class Manager():
         self.players = []
         self.stats = []
         self.buffs = []
+        self.specialEffects = []
     
     def update(self, dt):
 
@@ -45,3 +46,10 @@ class Manager():
                 floatingTextObject.text.delete()
                 self.floatingTexts.remove(floatingTextObject)
                 del floatingTextObject
+        
+        for specialEffectObject in self.specialEffects:
+            specialEffectObject.update(dt)
+            if specialEffectObject.alive == False:
+                specialEffectObject.sprite.delete()
+                self.specialEffects.remove(specialEffectObject)
+                del specialEffectObject 
