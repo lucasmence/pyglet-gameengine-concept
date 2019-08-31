@@ -1,4 +1,5 @@
 import pyglet
+pyglet.options['debug_gl'] = False
 from pyglet.window import key
 from pyglet.window import FPSDisplay
 from pyglet.window import mouse
@@ -42,6 +43,7 @@ def display_window_preload():
 
     global manager
     manager = managerControl.Manager(mainBatch)
+
 
 def display_fps_show():
     global window
@@ -100,8 +102,8 @@ def overworld_units_spawn():
     manager.units.append(player)    
 
     enemiesList = []
-    for index in range(3):
-        enemy = units.NinjaMinion(mainBatch, 500 + index * 50, 400 + index * 50, 13, manager)
+    for index in range(1):
+        enemy = units.NinjaMinion(mainBatch, 400 + index * 50, 300 + index * 50, 13, manager)
         enemiesList.append(enemy)
         manager.units.append(enemy)
 

@@ -91,6 +91,7 @@ class Unit(objects.Object):
         self.sprite = pyglet.sprite.Sprite(self.texture, x=positionX, y=positionY, batch=mainBatch)
         self.animation = AnimationManager(self.sprite)
         self.specialEffect = False
+        self.pausedTime = 0.00
         self.manager = manager
         self.batch = mainBatch
         self.name = 'unit'
@@ -213,9 +214,19 @@ class Unit(objects.Object):
 
                 self.animation.animate('attack')                
 
-    def update(self, dt):  
+    def update(self, dt): 
+
         if (self.alive == True):
+
+            if self.pausedTime > 0:
+                self.paused = True
+                self.pausedTime -= dt
+            else:
+                self.pausedTime = 0
+                self.paused = False
+
             self.animation.update(dt)
+
             if (self.attack != None):
                 self.attack.loop(dt)
             

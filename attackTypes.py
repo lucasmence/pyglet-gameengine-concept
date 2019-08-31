@@ -7,8 +7,8 @@ from game import collision
 from game import abilities
 
 class Slash(abilities.Shuriken):
-    def __init__(self, caster, objectList):
-        super().__init__(caster, objectList)
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
         self.name = 'slash'
         self.cooldown = 0.3
         self.rangeMax = 50
@@ -17,6 +17,7 @@ class Slash(abilities.Shuriken):
         self.energy = 0
         self.wave = True
         self.singleTarget = True
+        self.castingTime = 0.30
 
         self.missileStartPositionX = 25
         self.missileStartPositionY = 25
