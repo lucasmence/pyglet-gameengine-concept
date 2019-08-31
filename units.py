@@ -10,23 +10,6 @@ from game import objects
 
 class Animation():
     def __init__(self):
-        self.time = 0
-        self.timeMax = 0
-    
-    def animate(self, sprite, image, timeMax):
-        sprite.image = image
-        self.timeMax = timeMax
-        self.time = 0
-
-    def update(self, dt):
-        if self.time <= self.timeMax:
-            self.time += 1 * dt
-            return False
-        else:
-            return True
-
-class AnimationSeries():
-    def __init__(self):
         self.time = []
         self.timeMax = []
         self.imageList = []
@@ -63,34 +46,29 @@ class AnimationSeries():
 
         return result
 
+class AnimationSprite():
+    def __init__(self, sprite, time, name):
+        self.sprite = sprite
+        self.time = time
+        self.name = name
+
 class AnimationManager():
-    def __init__(self):
-        self.spriteStand = None
-        self.spriteWalk = None
-        self.spriteAttack = None
-
-        self.timeSpriteWalk = [0.5]
-        self.timeSpriteAttack = [0.5]
-        self.timeSpriteStand = [0.5]
-
+    def __init__(self, sprite):
+        self.animationList = []
         self.currentAnimation = ''
 
-        self.animation = AnimationSeries()
-        self.sprite = None
+        self.animationExecute = Animation()
+        self.sprite = sprite
 
     def animate(self, name):
         if (self.currentAnimation != name):
-            self.currentAnimation = name
-
-            if name == 'move':
-                self.animation.animate(self.sprite, self.spriteWalk, self.timeSpriteWalk)
-            elif name == 'attack':
-                self.animation.animate(self.sprite, self.spriteAttack, self.timeSpriteWalk)
-            elif name == 'stand':
-                self.animation.animate(self.sprite, self.spriteStand, self.timeSpriteWalk)
+            for animation in self.animationList:
+                if animation.name == name: 
+                    self.currentAnimation = name
+                    self.animationExecute.animate(self.sprite, animation.sprite, animation.time)
         
     def update(self, dt):
-        if self.animation.update(dt) == True:
+        if self.animationExecute.update(dt) == True:
             self.animate('stand')
 
 class Bonus():
@@ -113,7 +91,7 @@ class Unit(objects.Object):
         self.animationAttack = None
         self.animationTime = 0
         self.animationAttackTime = 0.30
-        self.animation = AnimationManager()
+        self.animation = AnimationManager(None)
         self.manager = manager
         self.batch = mainBatch
         self.name = 'unit'
@@ -265,7 +243,7 @@ class Unit(objects.Object):
             
             if (self.moving == True and self.paused == False):    
                 if not (collision.collisionObject(self, self.angle, self.manager)):
-                    self.animation.animate('move') 
+                    self.animation.animate('walk') 
 
                     movementX = self.movementSpeed + self.bonus.movementSpeed
                     movementY = self.movementSpeed + self.bonus.movementSpeed
@@ -315,25 +293,36 @@ class Ninja(Unit):
         super().__init__(mainBatch, positionX, positionY, owner, manager)
         self.texture = textures.texture_load('game/sprites/characters/anska-move.png', 1, 1, 50, 50, 0.5, True)
         self.sprite.image = self.texture
-        self.animationAttack = self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=65,y=0,height=50,width=50)], 0.5, True)
 
-        self.animation.spriteStand = [self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=0,y=0,height=50,width=50)], 1, True)]
-        self.animation.spriteWalk = [self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=65,y=0,height=50,width=50)], 1, True)]
-        self.animation.spriteAttack = [self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=315,y=0,height=50,width=50)], 1, True)]
         self.animation.sprite = self.sprite
 
-        self.animation.timeSpriteWalk = []
-        self.animation.spriteWalk.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
-        self.animation.spriteWalk.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=130,y=0,height=50,width=50)], 1, True))
-        self.animation.spriteWalk.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=190,y=0,height=50,width=50)], 1, True))
-        self.animation.spriteWalk.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=252,y=0,height=50,width=50)], 1, True))
-        self.animation.spriteWalk.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
-        self.animation.spriteWalk.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=380,y=0,height=50,width=50)], 1, True))
-        self.animation.spriteWalk.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=445,y=0,height=50,width=50)], 1, True))
-        self.animation.spriteWalk.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=510,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList.append(AnimationSprite([], [], 'stand'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
 
-        for animation in self.animation.spriteWalk:
-            self.animation.timeSpriteWalk.append(0.05)
+        self.animation.animationList.append(AnimationSprite([], [], 'walk'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=65,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=130,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=190,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=252,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=380,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=445,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=510,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
 
         self.sprite.update(scale=1.00)
         self.name = 'ninja'
@@ -354,12 +343,22 @@ class NinjaMinion(Ninja):
         self.texture = textures.texture_load('game/sprites/ninja-gray.png', 1, 2, 100, 100, 0.5, True)
         self.sprite.update(scale=0.5)
         self.sprite.image = self.texture
-        self.animationAttack = self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=200,y=0,height=100,width=100)], 0.5, True)
 
-        self.animation.spriteStand = [self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=0,y=0,height=100,width=100)], 1, True)]
-        self.animation.spriteWalk = [self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=100,y=0,height=100,width=100)], 1, True)]
-        self.animation.spriteAttack = [self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=200,y=0,height=100,width=100)], 1, True)]
         self.animation.sprite = self.sprite
+
+        self.animation.animationList.append(AnimationSprite([], [], 'stand'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=0,y=0,height=100,width=100)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'walk'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=100,y=0,height=100,width=100)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=0,y=0,height=100,width=100)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/ninja-gray.png').get_region(x=200,y=0,height=100,width=100)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
 
         self.name = 'ninjaMinion'
         self.attackSpeed = 1
