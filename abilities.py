@@ -40,6 +40,8 @@ class SkillLinear(objects.Object):
         self.name = 'skillLinear'
         self.cooldown = 1
         self.cooldownTime = self.cooldown 
+        self.stopTimeLimit = 0.25
+        self.stopTime = self.stopTimeLimit
         self.rangeMax = 500
         self.speed = 500
         self.damage = 1
@@ -63,6 +65,7 @@ class SkillLinear(objects.Object):
         if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
             self.caster.energy -= self.energy
             self.cooldownTime = 0
+            self.stopTime = 0
 
             sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
             sprite.update(scale=self.scale)
@@ -163,6 +166,12 @@ class SkillLinear(objects.Object):
                     del object
             
         self.cooldownTime += dt 
+        self.stopTime += dt
+
+        if self.stopTime < self.stopTimeLimit:
+            self.caster.paused = True
+        else:
+            self.caster.paused = False
 
 
 class Shuriken(SkillLinear):
