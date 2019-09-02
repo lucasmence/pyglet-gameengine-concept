@@ -81,6 +81,8 @@ class SkillLinear(objects.Object):
 
             object.angle = collision.angle(x, object.sprite.x, y, object.sprite.y)
 
+            self.caster.angle = collision.angle(x, object.sprite.x, y, object.sprite.y)
+
             sprite.image.anchor_x = sprite.width / 2
             sprite.image.anchor_y = sprite.height / 2
 

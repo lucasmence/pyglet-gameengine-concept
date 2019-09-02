@@ -60,7 +60,17 @@ class AnimationManager():
         self.animationExecute = Animation()
         self.sprite = sprite
 
-    def animate(self, name):
+    def animate(self, name, angle):
+        if (name != 'stand') and (name != 'death'):
+            if ((angle >= 0) and (angle <= 60)) or ((angle > 300) and (angle <= 360)):
+                name = name + '-right'
+            elif (angle > 60) and (angle <= 120):
+                name = name + '-up'
+            elif (angle > 120) and (angle <= 240):
+                name = name + '-left'
+            elif (angle > 240) and (angle <= 300):
+                name = name + '-down'
+
         if (self.currentAnimation != name):
             for animation in self.animationList:
                 if animation.name == name: 
@@ -70,7 +80,7 @@ class AnimationManager():
     def update(self, dt):
         if self.animationExecute.update(dt) == True:
             self.currentAnimation = ''
-            self.animate('stand')
+            self.animate('stand', 0)
         
 class Bonus():
     def __init__(self):
@@ -212,7 +222,7 @@ class Unit(objects.Object):
                 self.moveX = self.sprite.x
                 self.moveY = self.sprite.y  
 
-                self.animation.animate('attack')                
+                self.animation.animate('attack', self.angle)                
 
     def update(self, dt): 
 
@@ -255,7 +265,7 @@ class Unit(objects.Object):
             
             if (self.moving == True and self.paused == False):    
                 if not (collision.collisionObject(self, self.angle, self.manager)):
-                    self.animation.animate('walk') 
+                    self.animation.animate('walk', self.angle) 
 
                     movementX = self.movementSpeed + self.bonus.movementSpeed
                     movementY = self.movementSpeed + self.bonus.movementSpeed
@@ -286,10 +296,10 @@ class Unit(objects.Object):
                             self.sprite.y += movementY * dt  
                     else:
                         self.moving = False  
-                        self.animation.animate('stand')             
+                        self.animation.animate('stand', self.angle)             
                 else:
                     self.moving = False
-                    self.animation.animate('stand') 
+                    self.animation.animate('stand', self.angle) 
 
             elif (self.paused == True):
                 self.moving = False
@@ -346,17 +356,17 @@ class SkeletonWarriorDeathEffect(Unit):
         spriteY = 0
 
         self.animation.animationList.append(AnimationSprite([], [], 'stand'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=7,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-death.png').get_region(x=7,y=spriteY,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.30)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=71,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-death.png').get_region(x=71,y=spriteY,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=135,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-death.png').get_region(x=135,y=spriteY,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=200,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-death.png').get_region(x=200,y=spriteY,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=265,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-death.png').get_region(x=265,y=spriteY,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=328,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-death.png').get_region(x=328,y=spriteY,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(1)
 
         self.totalTime = 0
@@ -379,47 +389,173 @@ class Ninja(Unit):
     def __init__(self, mainBatch, positionX, positionY, owner, manager):    
         super().__init__(mainBatch, positionX, positionY, owner, manager)
         
-        spriteY = 1090
-
         self.animation.animationList.append(AnimationSprite([], [], 'stand'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=6,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-stand-down.png').get_region(x=6,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=70,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-stand-down.png').get_region(x=70,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=134,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-stand-down.png').get_region(x=134,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=198,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-stand-down.png').get_region(x=198,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=262,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-stand-down.png').get_region(x=262,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=326,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-stand-down.png').get_region(x=326,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska.png').get_region(x=390,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-stand-down.png').get_region(x=390,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
 
-        self.animation.animationList.append(AnimationSprite([], [], 'walk'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=65,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList.append(AnimationSprite([], [], 'walk-down'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=65,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=130,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=130,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=190,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=190,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=252,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=252,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=380,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=380,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=445,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=445,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=510,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-down.png').get_region(x=510,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
 
-        self.animation.animationList.append(AnimationSprite([], [], 'attack'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska-move.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
-        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
+        self.animation.animationList.append(AnimationSprite([], [], 'walk-left'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=65,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=130,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=190,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=252,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=380,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=445,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-left.png').get_region(x=510,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'walk-right'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=65,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=130,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=190,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=252,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=380,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=445,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-right.png').get_region(x=510,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'walk-up'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=65,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=0,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=130,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=190,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=252,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=315,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=380,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=445,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-move-up.png').get_region(x=510,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack-up'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-up.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-up.png').get_region(x=70,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-up.png').get_region(x=136,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-up.png').get_region(x=200,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-up.png').get_region(x=265,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-up.png').get_region(x=329,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-up.png').get_region(x=393,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-up.png').get_region(x=456,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack-right'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-right.png').get_region(x=10,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-right.png').get_region(x=72,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-right.png').get_region(x=135,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-right.png').get_region(x=196,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-right.png').get_region(x=265,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-right.png').get_region(x=333,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-right.png').get_region(x=393,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-right.png').get_region(x=452,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack-left'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-left.png').get_region(x=4,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-left.png').get_region(x=70,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-left.png').get_region(x=135,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-left.png').get_region(x=204,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-left.png').get_region(x=260,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-left.png').get_region(x=320,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-left.png').get_region(x=388,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-left.png').get_region(x=458,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack-down'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-down.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-down.png').get_region(x=72,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-down.png').get_region(x=135,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-down.png').get_region(x=199,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-down.png').get_region(x=263,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-down.png').get_region(x=327,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-down.png').get_region(x=391,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/anska/anska-attack-down.png').get_region(x=455,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.04)
 
         self.sprite.update(scale=1.00)
         self.name = 'ninja'
@@ -444,35 +580,157 @@ class NinjaMinion(Ninja):
     def __init__(self, mainBatch, positionX, positionY, owner, manager):    
         super().__init__(mainBatch, positionX, positionY, owner, manager)
 
-        spriteY = 700
-
         self.animation.animationList.append(AnimationSprite([], [], 'stand'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=7,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-stand.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-stand.png').get_region(x=71,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-stand.png').get_region(x=135,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-stand.png').get_region(x=199,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-stand.png').get_region(x=263,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-stand.png').get_region(x=327,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-stand.png').get_region(x=391,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.15)
 
-        self.animation.animationList.append(AnimationSprite([], [], 'walk'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=7,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList.append(AnimationSprite([], [], 'walk-left'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=71,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=71,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=135,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=135,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=200,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=199,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=263,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=263,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=328,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=327,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=392,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=391,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=455,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=455,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=520,y=spriteY,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-left.png').get_region(x=519,y=0,height=50,width=50)], 1, True))
         self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
 
-        self.animation.animationList.append(AnimationSprite([], [], 'attack'))
-        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior.png').get_region(x=323,y=435,height=50,width=50)], 1, True))
-        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.5)
+        self.animation.animationList.append(AnimationSprite([], [], 'walk-right'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=71,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=135,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=199,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=263,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=327,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=391,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=455,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-right.png').get_region(x=519,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'walk-up'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=71,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=135,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=199,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=263,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=327,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=391,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=455,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-up.png').get_region(x=519,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+    
+        self.animation.animationList.append(AnimationSprite([], [], 'walk-down'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=71,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=135,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=199,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=263,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=327,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=391,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=455,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-walk-down.png').get_region(x=519,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.10)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack-left'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-left.png').get_region(x=8,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-left.png').get_region(x=69,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-left.png').get_region(x=134,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-left.png').get_region(x=196,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-left.png').get_region(x=260,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-left.png').get_region(x=324,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+    
+        self.animation.animationList.append(AnimationSprite([], [], 'attack-right'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-right.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-right.png').get_region(x=72,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-right.png').get_region(x=136,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-right.png').get_region(x=201,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-right.png').get_region(x=267,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-right.png').get_region(x=330,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack-up'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-up.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-up.png').get_region(x=71,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-up.png').get_region(x=134,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-up.png').get_region(x=200,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-up.png').get_region(x=265,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-up.png').get_region(x=329,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+
+        self.animation.animationList.append(AnimationSprite([], [], 'attack-down'))
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-down.png').get_region(x=7,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-down.png').get_region(x=71,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-down.png').get_region(x=134,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-down.png').get_region(x=201,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-down.png').get_region(x=266,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
+        self.animation.animationList[len(self.animation.animationList)-1].sprite.append(self.sprite.image.from_image_sequence([pyglet.image.load('game/sprites/characters/skeleton-warrior/skeleton-attack-down.png').get_region(x=330,y=0,height=50,width=50)], 1, True))
+        self.animation.animationList[len(self.animation.animationList)-1].time.append(0.05)
 
 
         self.name = 'ninjaMinion'
@@ -482,8 +740,10 @@ class NinjaMinion(Ninja):
         self.energyRegeneration = 0.2
         self.healthRegeneration = 0.00
         self.armor = 0
-        self.movementSpeed = 50
+        self.movementSpeed = 20
         self.minimumRange = 50
+
+        self.skillQ = None
     
     def update(self, dt):
         self.moving = True
@@ -492,9 +752,10 @@ class NinjaMinion(Ninja):
 
         if (collision.distance(self.diferenceX, self.diferenceY) <= 100):
             self.cast(self.A, self.moveX, self.moveY)  
+
             
-        if (collision.distance(self.diferenceX, self.diferenceY) >= 150):
-            self.cast(self.Q, self.moveX, self.moveY)    
+        #if (collision.distance(self.diferenceX, self.diferenceY) >= 150):
+        #    self.cast(self.Q, self.moveX, self.moveY)    
 
     def kill(self):
         deathEffect = SkeletonWarriorDeathEffect(self.sprite.batch, self.sprite.x,self.sprite.y, self.owner, self.manager)
