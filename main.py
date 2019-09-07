@@ -102,7 +102,7 @@ def overworld_units_spawn():
     manager.units.append(player)    
 
     enemiesList = []
-    for index in range(13):
+    for index in range(3):
         enemy = units.NinjaMinion(mainBatch, 300 + index * 20, 300 + index * 20, 13, manager)
         enemiesList.append(enemy)
         manager.units.append(enemy)

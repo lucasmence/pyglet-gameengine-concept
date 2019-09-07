@@ -14,6 +14,7 @@ class Manager():
         self.stats = []
         self.buffs = []
         self.specialEffects = []
+        self.texturePacks = []
     
     def update(self, dt):
 
