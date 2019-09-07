@@ -35,7 +35,7 @@ def circle(x, y, radius, dt):
 
 def display_window_preload():
     global window
-    window = pyglet.window.Window(width=1200, height=800, caption="goeninjas", resizable=False)
+    window = pyglet.window.Window(width=1200, height=800, caption="ardunes-game", resizable=False)
     window.set_location(400, 100)
 
     global mainBatch

@@ -34,8 +34,10 @@ class Hero(BaseUnit):
         self.energyMax = 10 
         self.armor = 10
         self.movementSpeed = 120
+
         self.skillQ = abilities.Shuriken(self, self.manager)
         self.attack = attackTypes.Slash(self, self.manager) 
+
         self.health = self.healthMax + self.bonus.healthMax
 
 class SkeletonWarrior(BaseUnit):  
@@ -55,6 +57,7 @@ class SkeletonWarrior(BaseUnit):
         self.minimumRange = 50
 
         self.skillQ = None
+        self.attack = attackTypes.Slash(self, self.manager) 
     
     def update(self, dt):
         self.moving = True

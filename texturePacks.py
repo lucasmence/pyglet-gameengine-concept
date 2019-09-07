@@ -69,12 +69,12 @@ class TexturePack():
                                  Texture(388, 0, 50, 50, 0.05, 'game/sprites/characters/anska/anska-attack-left.png', sprite),
                                  Texture(458, 0, 50, 50, 0.05, 'game/sprites/characters/anska/anska-attack-left.png', sprite)],
 
-                'death' : [Texture(  7, 0, 50, 50, 0.05, 'game/sprites/characters/anska/anska-death.png', sprite),
-                           Texture( 72, 0, 50, 50, 0.05, 'game/sprites/characters/anska/anska-death.png', sprite),
-                           Texture(135, 0, 50, 50, 0.05, 'game/sprites/characters/anska/anska-death.png', sprite),
-                           Texture(200, 0, 50, 50, 0.05, 'game/sprites/characters/anska/anska-death.png', sprite),
-                           Texture(265, 0, 50, 50, 0.05, 'game/sprites/characters/anska/anska-death.png', sprite),
-                           Texture(328, 0, 50, 50, 0.05, 'game/sprites/characters/anska/anska-death.png', sprite)]
+                'death' : [Texture(  7, 0, 50, 50, 0.50, 'game/sprites/characters/anska/anska-death.png', sprite),
+                           Texture( 72, 0, 50, 50, 0.50, 'game/sprites/characters/anska/anska-death.png', sprite),
+                           Texture(135, 0, 50, 50, 0.50, 'game/sprites/characters/anska/anska-death.png', sprite),
+                           Texture(200, 0, 50, 50, 0.50, 'game/sprites/characters/anska/anska-death.png', sprite),
+                           Texture(265, 0, 50, 50, 0.50, 'game/sprites/characters/anska/anska-death.png', sprite),
+                           Texture(328, 0, 50, 50, 2.00, 'game/sprites/characters/anska/anska-death.png', sprite)]
             }
 
         if self.textureName == 'skeleton-warrior':
