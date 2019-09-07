@@ -18,6 +18,7 @@ class Slash(abilities.Shuriken):
         self.wave = True
         self.singleTarget = True
         self.castingTime = 0.50
+        self.criticalChance = 10
 
         self.missileStartPositionX = 25
         self.missileStartPositionY = 25

@@ -1,5 +1,6 @@
 import pyglet
 import math
+import random
 
 from game import textures
 from game import collision
@@ -48,6 +49,7 @@ class SkillLinear(objects.Object):
         self.scale = 1
         self.wave = False
         self.singleTarget = True
+        self.criticalChance = 5
 
         self.missileStartPositionX = 25
         self.missileStartPositionY = 25
@@ -146,18 +148,26 @@ class SkillLinear(objects.Object):
                         
                         if (self.singleTarget == True and object.damageDealt == False) or (self.singleTarget == False):
                             object.damageDealt = True
+                            
                             damageValue = self.damage * (1 - ((colideValue.armor + colideValue.bonus.armor)/ 100))
+
+                            criticalValue = random.randint(1,100)
+                            critical = False
+                            if criticalValue <= self.criticalChance:
+                                critical = True
+                                damageValue = damageValue * 2
+
                             colideValue.health -= damageValue
+
                             useCurrentText = False
                             for objectText in self.manager.floatingTexts:
-                                if objectText.type == 30: 
-                                    if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50:
-                                        useCurrentText = True
-                                        objectText.text.text = str(int(objectText.text.text) + int(round(damageValue)))
-                                        objectText.opacity = 0
-                                        objectText.text.y = objectText.unit.sprite.y
+                                if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50 and objectText.critical == False:
+                                    useCurrentText = True
+                                    objectText.value = objectText.value + damageValue
+                                    objectText.opacity = 0
+                                    objectText.text.y = objectText.unit.sprite.y
                             if useCurrentText == False:
-                                textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0)
+                                textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0, critical)
                                 self.manager.floatingTexts.append(textDamage)
 
 
