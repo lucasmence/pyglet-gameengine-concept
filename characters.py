@@ -66,6 +66,31 @@ class SkeletonWarrior(BaseUnit):
 
         if (collision.distance(self.diferenceX, self.diferenceY) <= 100):
             self.cast(self.A, self.moveX, self.moveY)  
+
+class SkeletonArcher(BaseUnit):  
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
+        super().__init__(mainBatch, positionX, positionY, owner, manager)
+
+        self.model.load('skeleton-archer', '', manager)
+
+        self.name = 'skeleton-archer'
+        self.attackSpeed = 2.25
+        self.healthMax = 10
+        self.energyMax = 10 
+        self.energyRegeneration = 0.2
+        self.healthRegeneration = 0.00
+        self.armor = 0
+        self.movementSpeed = 20
+        self.minimumRange = 400
+
+        self.skillQ = None
+        self.attack = attackTypes.Arrow(self, self.manager) 
+    
+    def update(self, dt):
+        self.moving = True
+        distance = collision.distance(self.diferenceX, self.diferenceY)
+        super().update(dt)
+
+        if (collision.distance(self.diferenceX, self.diferenceY) <= 500):
+            self.cast(self.A, self.moveX, self.moveY)  
    
-        #if (collision.distance(self.diferenceX, self.diferenceY) >= 150):
-        #    self.cast(self.Q, self.moveX, self.moveY) 

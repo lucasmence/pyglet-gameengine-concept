@@ -107,6 +107,11 @@ def overworld_units_spawn():
         enemy = characters.SkeletonWarrior(mainBatch, 300 + index * 20, 300 + index * 20, 13, manager)
         enemiesList.append(enemy)
         manager.units.append(enemy)
+    
+    for index in range(1):
+        enemy = characters.SkeletonArcher(mainBatch, 500 + index * 20, 300 + index * 20, 13, manager)
+        enemiesList.append(enemy)
+        manager.units.append(enemy)
 
 def initialization():
 
