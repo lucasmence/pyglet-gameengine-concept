@@ -96,14 +96,15 @@ def constants_load():
     mouseY = 0
 
 def overworld_units_spawn():
+    from game import characters
     global player, mainBatch, enemiesList, manager
 
-    player = units.Ninja(mainBatch, 200, 200, 1, manager)
+    player = characters.Hero(mainBatch, 200, 200, 1, manager)
     manager.units.append(player)    
 
     enemiesList = []
     for index in range(3):
-        enemy = units.NinjaMinion(mainBatch, 300 + index * 20, 300 + index * 20, 13, manager)
+        enemy = characters.SkeletonWarrior(mainBatch, 300 + index * 20, 300 + index * 20, 13, manager)
         enemiesList.append(enemy)
         manager.units.append(enemy)
 

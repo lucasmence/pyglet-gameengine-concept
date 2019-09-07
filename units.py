@@ -3,8 +3,6 @@ import math
 from pyglet.window import key
 
 from game import textures
-from game import abilities
-from game import attackTypes
 from game import collision
 from game import objects
 from game import models
@@ -263,56 +261,7 @@ class DeathAnimation(Unit):
         self.totalTime -= dt
 
         if self.totalTime <= 0:
-            self.alive = False
-
-                  
-class Ninja(Unit):
-    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
-        super().__init__(mainBatch, positionX, positionY, owner, manager)
-        
-        self.model.load('anska', '', manager)
-
-        self.sprite.update(scale=1.00)
-        self.name = 'ninja'
-        self.attackSpeed = 0.3
-        self.healthMax = 50
-        self.healthRegeneration = 0.2
-        self.energyMax = 10 
-        self.armor = 10
-        self.movementSpeed = 120
-        self.skillQ = abilities.Shuriken(self, self.manager)
-        self.attack = attackTypes.Slash(self, self.manager) 
-        self.health = self.healthMax + self.bonus.healthMax
-
-class NinjaMinion(Ninja):  
-    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
-        super().__init__(mainBatch, positionX, positionY, owner, manager)
-
-        self.model.load('skeleton-warrior', '', manager)
-
-        self.name = 'ninjaMinion'
-        self.attackSpeed = 1
-        self.healthMax = 10
-        self.energyMax = 10 
-        self.energyRegeneration = 0.2
-        self.healthRegeneration = 0.00
-        self.armor = 0
-        self.movementSpeed = 20
-        self.minimumRange = 50
-
-        self.skillQ = None
-    
-    def update(self, dt):
-        self.moving = True
-        distance = collision.distance(self.diferenceX, self.diferenceY)
-        super().update(dt)
-
-        if (collision.distance(self.diferenceX, self.diferenceY) <= 100):
-            self.cast(self.A, self.moveX, self.moveY)  
-
-            
-        #if (collision.distance(self.diferenceX, self.diferenceY) >= 150):
-        #    self.cast(self.Q, self.moveX, self.moveY)    
+            self.alive = False   
 
 class Bar():
     def __init__(self, mainBatch, unit):
