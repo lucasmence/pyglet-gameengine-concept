@@ -40,6 +40,8 @@ class Hero(BaseUnit):
 
         self.health = self.healthMax + self.bonus.healthMax
 
+        self.sprite.image = self.model.texturePack.textureFiles['stand'][0].sprite
+
 class SkeletonWarrior(BaseUnit):  
     def __init__(self, mainBatch, positionX, positionY, owner, manager):    
         super().__init__(mainBatch, positionX, positionY, owner, manager)
@@ -58,6 +60,8 @@ class SkeletonWarrior(BaseUnit):
 
         self.skillQ = None
         self.attack = attackTypes.Slash(self, self.manager) 
+
+        self.sprite.image = self.model.texturePack.textureFiles['stand'][0].sprite
     
     def update(self, dt):
         self.moving = True
@@ -85,6 +89,8 @@ class SkeletonArcher(BaseUnit):
 
         self.skillQ = None
         self.attack = attackTypes.Arrow(self, self.manager) 
+
+        self.sprite.image = self.model.texturePack.textureFiles['stand'][0].sprite
     
     def update(self, dt):
         self.moving = True
