@@ -24,7 +24,7 @@ class Hero(BaseUnit):
     def __init__(self, mainBatch, positionX, positionY, owner, manager):    
         super().__init__(mainBatch, positionX, positionY, owner, manager)
         
-        self.model.load('anska', '', manager)
+        self.model.load('warrior', '', manager)
 
         self.sprite.update(scale=1.00)
         self.name = 'hero'
@@ -100,3 +100,23 @@ class SkeletonArcher(BaseUnit):
         if (collision.distance(self.diferenceX, self.diferenceY) <= 500):
             self.cast(self.A, self.moveX, self.moveY)  
    
+
+class SkeletonArcherHero(BaseUnit):  
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
+        super().__init__(mainBatch, positionX, positionY, owner, manager)
+
+        self.model.load('skeleton-archer', '', manager)
+
+        self.name = 'skeleton-archer'
+        self.attackSpeed = 2.00
+        self.healthMax = 10
+        self.energyMax = 10 
+        self.energyRegeneration = 0.2
+        self.healthRegeneration = 0.00
+        self.armor = 0
+        self.movementSpeed = 100
+
+        self.skillQ = None
+        self.attack = attackTypes.Arrow(self, self.manager) 
+
+        self.sprite.image = self.model.texturePack.textureFiles['stand'][0].sprite

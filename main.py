@@ -17,14 +17,14 @@ def circle(x, y, radius, dt):
     global execute, i, iterations, c, s, dx, dy
     if not execute:
         execute = True
-        iterations = int(2*radius*math.pi) * 0.2
+        iterations = int(2*radius*math.pi) * 0.10
         s = math.sin(2*math.pi / iterations)
         c = math.cos(2*math.pi / iterations) 
         i = 0
         dx, dy = radius, 0
 
     #for i in range(iterations+1): 
-    if i < iterations+1:   
+    if i < int(iterations)+1:   
         testBlock.sprite.x = (x + dx)
         testBlock.sprite.y = (y + dy)
         dx, dy = (dx*c - dy*s), (dy*c + dx*s)
@@ -103,10 +103,12 @@ def overworld_units_spawn():
     manager.units.append(player)    
 
     enemiesList = []
+    
     for index in range(3):
-        enemy = characters.SkeletonWarrior(mainBatch, 300 + index * 20, 300 + index * 20, 13, manager)
+        enemy = characters.SkeletonWarrior(mainBatch, 400 + index * 20, 400 + index * 20, 13, manager)
         enemiesList.append(enemy)
         manager.units.append(enemy)
+    
     
     for index in range(1):
         enemy = characters.SkeletonArcher(mainBatch, 500 + index * 20, 300 + index * 20, 13, manager)
@@ -166,7 +168,7 @@ def on_key_release(symbol, modifiers):
 def eventSkills(dt):
     global player, enemiesList, manager
 
-    circle(200, 500, 50, dt)
+    circle(200, 500, 100, dt)
     
     playerIsAlive = False
     try:

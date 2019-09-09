@@ -248,6 +248,7 @@ class DeathAnimation(Unit):
         self.totalTime = 0
 
         self.model.load(texture, 'death', manager)
+        self.sprite.image = self.model.texturePack.textureFiles['death'][0].sprite
 
         for animation in self.model.texturePack.textureFiles['death']:
             self.totalTime += animation.time 
