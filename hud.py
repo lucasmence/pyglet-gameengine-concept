@@ -26,7 +26,7 @@ class Hud(objects.Object):
         hudQIcon = HudIcon(mainBatch, 'Q', 500, 40, 'icon-shuriken.png')
         self.icons.append(hudQIcon)
 
-        hudWIcon = HudIcon(mainBatch, 'W', 560, 40, None)
+        hudWIcon = HudIcon(mainBatch, 'W', 560, 40, 'icon-shield-block.png')
         self.icons.append(hudWIcon)
 
         hudEIcon = HudIcon(mainBatch, 'E', 620, 40, None)

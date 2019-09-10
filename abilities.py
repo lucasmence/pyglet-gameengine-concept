@@ -160,21 +160,80 @@ class SkillLinear(objects.Object):
                             colideValue.health -= damageValue
 
                             useCurrentText = False
-                            for objectText in self.manager.floatingTexts:
-                                if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50 and objectText.critical == False:
-                                    useCurrentText = True
-                                    objectText.value = objectText.value + damageValue
-                                    objectText.opacity = 0
-                                    objectText.text.y = objectText.unit.sprite.y
-                            if useCurrentText == False:
-                                textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0, critical)
-                                self.manager.floatingTexts.append(textDamage)
+                            if damageValue > 0.5:
+                                for objectText in self.manager.floatingTexts:
+                                    if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50 and objectText.critical == False:
+                                        useCurrentText = True
+                                        objectText.value = objectText.value + damageValue
+                                        objectText.opacity = 0
+                                        objectText.text.y = objectText.unit.sprite.y
+                                if useCurrentText == False:
+                                    textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0, critical)
+                                    self.manager.floatingTexts.append(textDamage)
 
 
                 if (object.range >= self.rangeMax):
                     self.list.remove(object)
                     self.manager.missiles.remove(object)
                     del object
+            
+        self.cooldownTime += dt 
+
+class SkillBuff(objects.Object):
+    def __init__(self, caster, manager):
+        super().__init__()
+        self.manager = manager
+        self.caster = caster
+        self.id = 0
+        self.name = 'skillBuff'
+        self.cooldown = 1
+        self.cooldownTime = self.cooldown 
+        self.castingTime = 0.25
+        self.durationMax = 5
+        self.duration = 0
+        self.energy = 1
+        self.scale = 1
+        self.activated = False
+        self.list = []
+        
+        self.missileStartPositionX = 0
+        self.missileStartPositionY = 0
+       
+        self.sound = None
+        self.texture = None
+        self.sprite = None
+    
+    def destroy(self):
+        self.duration = self.durationMax
+        
+    def cast(self, x, y):
+        if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
+            self.caster.energy -= self.energy
+            self.cooldownTime = 0
+            self.caster.pausedTime = self.castingTime
+
+            self.duration = 0
+            if self.activated == False:
+                self.activated = True
+                if self.texture != None:
+                    self.sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
+                    self.sprite.update(scale=self.scale)
+                
+            self.sound.play()
+
+            return False
+        else:
+            return True
+        
+    def loop(self, dt):
+        if self.duration < self.durationMax and self.activated == True:
+            self.duration += dt
+            self.sprite.x = self.caster.sprite.x + self.missileStartPositionX
+            self.sprite.y = self.caster.sprite.y + self.missileStartPositionY
+        elif self.activated == True:
+            self.duration = 0
+            self.activated = False
+            self.sprite.delete()
             
         self.cooldownTime += dt 
 
@@ -194,3 +253,32 @@ class Shuriken(SkillLinear):
        
         self.sound = pyglet.media.load('game/sounds/shuriken.wav', streaming=False) 
         self.texture = textures.texture_load('game/sprites/ninja-shuriken-25x.png', 1, 4, 25, 25, 0.02, True)
+
+class ShieldBlock(SkillBuff):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'shieldBlock'
+        self.cooldown = 5
+        self.cooldownTime = self.cooldown 
+        self.castingTime = 0.10
+        self.durationMax = 3
+        self.energy = 3
+        self.scale = 1
+        
+        self.missileStartPositionX = 0
+        self.missileStartPositionY = 0
+       
+        self.sound = pyglet.media.load('game/sounds/shield.wav', streaming=False) 
+        self.texture = pyglet.image.load('game/sprites/characters/shield.png')
+    
+    def cast(self, x, y):
+        activate = self.activated
+        super().cast(x, y)
+        if activate == False and self.activated == True:
+            self.caster.bonus.armor = self.caster.bonus.armor + 100
+    
+    def loop(self, dt):
+        activate = self.activated
+        super().loop(dt)
+        if activate == True and self.activated == False:
+            self.caster.bonus.armor = self.caster.bonus.armor - 100

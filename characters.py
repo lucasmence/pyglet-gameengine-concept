@@ -36,6 +36,7 @@ class Hero(BaseUnit):
         self.movementSpeed = 120
 
         self.skillQ = abilities.Shuriken(self, self.manager)
+        self.skillW = abilities.ShieldBlock(self, self.manager)
         self.attack = attackTypes.Slash(self, self.manager) 
 
         self.health = self.healthMax + self.bonus.healthMax
