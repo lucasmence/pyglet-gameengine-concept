@@ -8,10 +8,11 @@ from game import objects
 from game import floatingText
 
 class Missile(objects.Object):
-    def __init__(self, player, sprite, speed, owner):
+    def __init__(self, caster, sprite, speed):
         super().__init__()
         self.name = 'missile'
         self.type = 3
+        self.caster = caster
 
         self.moveX = 0
         self.moveY = 0
@@ -19,18 +20,94 @@ class Missile(objects.Object):
         self.moveTypeX = 0
         self.moveTypeY = 0
         self.sprite = sprite
-        self.player = player
+        self.player = self.caster.sprite
         self.activated = False
         self.speedX = 0
         self.speedY = 0
         self.angle = 0
-        self.owner = owner
+        self.owner = self.caster.owner
         self.targets = []
         self.damageDealt = False
+        self.linearEnabled = False
+
+        self.rotationSin = 0
+        self.rotationCos = 0
+        self.rotationDx = 0
+        self.rotationDy = 0
+        self.rotationIteractions = 0
+        self.rotationIndex = 0
+        self.rotationEnabled = False
 
     def __del__(self):
         self.activated = False
         self.sprite.delete()
+
+    def moveLinear(self, dt):
+        if self.linearEnabled == False:
+            diferenceX = self.moveX - self.sprite.x
+            diferenceY = self.moveY - self.sprite.y
+            print(self.moveX)
+
+            self.angle = collision.angle(self.moveX, self.sprite.x, self.moveY, self.sprite.y)
+
+            self.caster.angle = collision.angle(self.moveX, self.sprite.x, self.moveY, self.sprite.y)
+
+            self.sprite.image.anchor_x = self.sprite.width / 2
+            self.sprite.image.anchor_y = self.sprite.height / 2
+
+            self.sprite.rotation = self.angle *-1
+
+            if diferenceX < 0:
+                diferenceX = diferenceX * -1
+            if diferenceY < 0:
+                diferenceY = diferenceY * -1
+
+            if diferenceX > diferenceY:
+                self.speedY = self.speedY * (diferenceY/diferenceX)
+            elif diferenceX < diferenceY:
+                self.speedX = self.speedX * (diferenceX/diferenceY)
+            
+            if (self.sprite.x < self.moveX):
+                self.moveTypeX = 0
+            if (self.sprite.x > self.moveX):
+                self.moveTypeX = 1
+
+            if (self.sprite.y < self.moveY):
+                self.moveTypeY = 0
+            if (self.sprite.y > self.moveY):
+                self.moveTypeY = 1 
+        else:
+            if self.moveTypeX == 1:
+                self.sprite.x -= self.speedX * dt      
+            else:
+                self.sprite.x += self.speedX * dt  
+
+            if self.moveTypeY == 1:
+                self.sprite.y -= self.speedY * dt 
+            else:
+                self.sprite.y += self.speedY * dt 
+
+            distanceX = (self.speedX * dt)
+            distanceY = (self.speedY * dt)
+
+            self.range += math.sqrt( ( distanceY * distanceY ) + ( distanceX  * distanceX ) )
+
+    def moveRotation(self, radius, speed, x, y):
+        if self.rotationEnabled == False:
+            self.rotationEnabled = True
+            self.rotationIteractions = int(2 * radius * math.pi) * speed
+            self.rotationSin = math.sin(2* math.pi / self.rotationIteractions)
+            self.rotationCos = math.cos(2 * math.pi / self.rotationIteractions) 
+            self.rotationIndex = 0
+            self.rotationDx, self.rotationDy = radius, 0
+
+        if self.rotationIndex < int(self.rotationIteractions)+1:   
+            self.sprite.x = (x + self.rotationDx)
+            self.sprite.y = (y + self.rotationDy)
+            self.rotationDx, self.rotationDy = (self.rotationDx * self.rotationCos - self.rotationDy * self.rotationSin), (self.rotationDy * self.rotationCos + self.rotationDx * self.rotationSin)
+            self.rotationIndex += 1
+        else:
+            self.rotationEnabled = False
 
 class SkillLinear(objects.Object):
     def __init__(self, caster, manager):
@@ -71,9 +148,12 @@ class SkillLinear(objects.Object):
             sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
             sprite.update(scale=self.scale)
             
-            object = Missile(self.caster.sprite, sprite, self.speed, self.caster.owner)
+            object = Missile(self.caster, sprite, self.speed)
             self.list.append(object)
             self.manager.missiles.append(object)
+
+            object.moveX = x
+            object.moveY = y
 
             object.speedX = self.speed
             object.speedY = self.speed
@@ -108,10 +188,11 @@ class SkillLinear(objects.Object):
             if (object.sprite.y < y):
                 object.moveTypeY = 0
             if (object.sprite.y > y):
-                object.moveTypeY = 1      
+                object.moveTypeY = 1   
 
-            self.sound.play()
             object.activated = True
+            self.sound.play()
+            
             return False
         else:
             return True
@@ -134,6 +215,9 @@ class SkillLinear(objects.Object):
                 distanceY = (object.speedY * dt)
 
                 object.range += math.sqrt( ( distanceY * distanceY ) + ( distanceX  * distanceX ) )
+                
+
+                object.moveRotation(50, 0.10, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY)
 
                 colideValue = collision.collisionObject(object, object.angle, self.manager)
 
