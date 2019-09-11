@@ -22,8 +22,8 @@ class Missile(objects.Object):
         self.sprite = sprite
         self.player = self.caster.sprite
         self.activated = False
-        self.speedX = 0
-        self.speedY = 0
+        self.speedX = speed
+        self.speedY = speed
         self.angle = 0
         self.owner = self.caster.owner
         self.targets = []
@@ -37,6 +37,7 @@ class Missile(objects.Object):
         self.rotationIteractions = 0
         self.rotationIndex = 0
         self.rotationEnabled = False
+        self.rotationFirstTime = True
 
     def __del__(self):
         self.activated = False
@@ -44,9 +45,9 @@ class Missile(objects.Object):
 
     def moveLinear(self, dt):
         if self.linearEnabled == False:
+            self.linearEnabled = True
             diferenceX = self.moveX - self.sprite.x
             diferenceY = self.moveY - self.sprite.y
-            print(self.moveX)
 
             self.angle = collision.angle(self.moveX, self.sprite.x, self.moveY, self.sprite.y)
 
@@ -76,29 +77,33 @@ class Missile(objects.Object):
                 self.moveTypeY = 0
             if (self.sprite.y > self.moveY):
                 self.moveTypeY = 1 
+
+        if self.moveTypeX == 1:
+            self.sprite.x -= self.speedX * dt      
         else:
-            if self.moveTypeX == 1:
-                self.sprite.x -= self.speedX * dt      
-            else:
-                self.sprite.x += self.speedX * dt  
+            self.sprite.x += self.speedX * dt  
 
-            if self.moveTypeY == 1:
-                self.sprite.y -= self.speedY * dt 
-            else:
-                self.sprite.y += self.speedY * dt 
+        if self.moveTypeY == 1:
+            self.sprite.y -= self.speedY * dt 
+        else:
+            self.sprite.y += self.speedY * dt 
 
-            distanceX = (self.speedX * dt)
-            distanceY = (self.speedY * dt)
+        distanceX = (self.speedX * dt)
+        distanceY = (self.speedY * dt)
 
-            self.range += math.sqrt( ( distanceY * distanceY ) + ( distanceX  * distanceX ) )
+        self.range += math.sqrt( ( distanceY * distanceY ) + ( distanceX  * distanceX ) )
 
-    def moveRotation(self, radius, speed, x, y):
+    def moveRotation(self, radius, speed, x, y, modifier):
         if self.rotationEnabled == False:
             self.rotationEnabled = True
-            self.rotationIteractions = int(2 * radius * math.pi) * speed
+            self.rotationIteractions = (int(2 * radius * math.pi) * speed)
             self.rotationSin = math.sin(2* math.pi / self.rotationIteractions)
             self.rotationCos = math.cos(2 * math.pi / self.rotationIteractions) 
-            self.rotationIndex = 0
+            if self.rotationFirstTime == True:
+                self.rotationFirstTime = False
+                self.rotationIndex = 0 + int(self.rotationIteractions * (modifier / 100))
+            else:
+                self.rotationIndex = 0
             self.rotationDx, self.rotationDy = radius, 0
 
         if self.rotationIndex < int(self.rotationIteractions)+1:   
@@ -108,6 +113,33 @@ class Missile(objects.Object):
             self.rotationIndex += 1
         else:
             self.rotationEnabled = False
+        
+class Skill(objects.Object):
+    def __init__(self, caster, manager):
+        super().__init__()
+        self.manager = manager
+        self.caster = caster
+        self.id = 0
+        self.name = 'skillLinear'
+        self.cooldown = 1
+        self.cooldownTime = self.cooldown 
+        self.castingTime = 0.25
+        self.rangeMax = 500
+        self.speed = 500
+        self.damage = 1
+        self.energy = 1
+        self.scale = 1
+        self.wave = False
+        self.singleTarget = True
+        self.criticalChance = 5
+
+        self.missileStartPositionX = int(self.caster.sprite.width / 2)
+        self.missileStartPositionY = int(self.caster.sprite.height / 2)
+       
+        self.sound = None
+        self.texture = None
+        self.list = []
+
 
 class SkillLinear(objects.Object):
     def __init__(self, caster, manager):
@@ -128,8 +160,8 @@ class SkillLinear(objects.Object):
         self.singleTarget = True
         self.criticalChance = 5
 
-        self.missileStartPositionX = 25
-        self.missileStartPositionY = 25
+        self.missileStartPositionX = int(self.caster.sprite.width / 2)
+        self.missileStartPositionY = int(self.caster.sprite.height / 2)
        
         self.sound = None
         self.texture = None
@@ -155,69 +187,20 @@ class SkillLinear(objects.Object):
             object.moveX = x
             object.moveY = y
 
-            object.speedX = self.speed
-            object.speedY = self.speed
-
-            diferenceX = x - object.sprite.x
-            diferenceY = y - object.sprite.y
-
-            object.angle = collision.angle(x, object.sprite.x, y, object.sprite.y)
-
-            self.caster.angle = collision.angle(x, object.sprite.x, y, object.sprite.y)
-
-            sprite.image.anchor_x = sprite.width / 2
-            sprite.image.anchor_y = sprite.height / 2
-
-            sprite.rotation = object.angle *-1
-
-            if diferenceX < 0:
-                diferenceX = diferenceX * -1
-            if diferenceY < 0:
-                diferenceY = diferenceY * -1
-
-            if diferenceX > diferenceY:
-                object.speedY = object.speedY * (diferenceY/diferenceX)
-            elif diferenceX < diferenceY:
-                object.speedX = object.speedX * (diferenceX/diferenceY)
-            
-            if (object.sprite.x < x):
-                object.moveTypeX = 0
-            if (object.sprite.x > x):
-                object.moveTypeX = 1
-
-            if (object.sprite.y < y):
-                object.moveTypeY = 0
-            if (object.sprite.y > y):
-                object.moveTypeY = 1   
-
             object.activated = True
-            self.sound.play()
+
+            if self.sound != None:
+                self.sound.play()
             
-            return False
-        else:
             return True
+        else:
+            return False
         
     def loop(self, dt):
         for object in self.list:
             if (object.activated == True):
 
-                if object.moveTypeX == 1:
-                    object.sprite.x -= object.speedX * dt      
-                else:
-                    object.sprite.x += object.speedX * dt  
-                
-                if object.moveTypeY == 1:
-                    object.sprite.y -= object.speedY * dt 
-                else:
-                    object.sprite.y += object.speedY * dt 
-
-                distanceX = (object.speedX * dt)
-                distanceY = (object.speedY * dt)
-
-                object.range += math.sqrt( ( distanceY * distanceY ) + ( distanceX  * distanceX ) )
-                
-
-                object.moveRotation(50, 0.10, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY)
+                object.moveLinear(dt)               
 
                 colideValue = collision.collisionObject(object, object.angle, self.manager)
 
@@ -260,8 +243,70 @@ class SkillLinear(objects.Object):
                     self.list.remove(object)
                     self.manager.missiles.remove(object)
                     del object
-            
-        self.cooldownTime += dt 
+
+        if self.cooldownTime < self.cooldown:    
+            self.cooldownTime += dt 
+
+class SkillDoubleStep(objects.Object):
+    def __init__(self, caster, manager):
+        super().__init__()
+        self.manager = manager
+        self.caster = caster
+        self.id = 0
+        self.name = 'skillDoubleStep'
+        self.step = 0
+        self.cooldownStep = [1, 1]
+        self.cooldownStepTime = [self.cooldownStep[0], self.cooldownStep[1]]
+        self.cooldown = self.cooldownStep[0]
+        self.cooldownTime = self.cooldown
+        self.castingTimeStep = [0.25, 0.25]
+        self.castingTime = self.castingTimeStep[0]
+        self.energyStep = [1, 0]
+        self.energy = self.energyStep[0]
+        self.timeStep = 5
+        self.stepFailed = False
+       
+        self.soundStep = [None, None]
+        self.sound = self.soundStep[0]
+        self.texture = None
+        self.list = []
+    
+    def destroy(self):
+        for object in self.list:
+            object.range = self.rangeMax
+        
+    def cast(self, x, y):
+        if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
+            self.stepFailed = False
+            if self.step == 0:
+                self.step = 1
+            elif self.step == 1:
+                self.step = 0
+            self.caster.energy -= self.energy
+            self.energy = self.energyStep[self.step]
+            self.cooldown = self.cooldownStep[self.step]
+            self.cooldownTime = 0
+            self.caster.pausedTime = self.castingTime
+            self.castingTime = self.castingTimeStep[self.step]
+
+            if self.sound != None:
+                self.sound.play()
+                self.sound = self.soundStep[self.step]
+
+            return True
+        else:
+            return False
+        
+    def loop(self, dt):
+        if self.cooldownTime < self.cooldown or self.cooldownTime < self.timeStep:
+            self.cooldownTime += dt
+        if self.step != 0 and self.cooldownTime >= self.timeStep:
+            self.stepFailed = True
+            self.step = 0
+            self.energy = self.energyStep[self.step]
+            self.cooldown = self.cooldownStep[self.step]
+            self.cooldownTime = 0
+            self.castingTime = self.castingTimeStep[self.step]
 
 class SkillBuff(objects.Object):
     def __init__(self, caster, manager):
@@ -318,8 +363,9 @@ class SkillBuff(objects.Object):
             self.duration = 0
             self.activated = False
             self.sprite.delete()
-            
-        self.cooldownTime += dt 
+
+        if self.cooldownTime < self.cooldown:    
+            self.cooldownTime += dt 
 
 
 class Shuriken(SkillLinear):
@@ -366,3 +412,115 @@ class ShieldBlock(SkillBuff):
         super().loop(dt)
         if activate == True and self.activated == False:
             self.caster.bonus.armor = self.caster.bonus.armor - 100
+
+class SteelStorm(SkillDoubleStep):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'steelStorm'
+        self.cooldownStep = [10, 2]
+        self.cooldownStepTime = [self.cooldownStep[0], self.cooldownStep[1]]
+        self.cooldown = self.cooldownStep[0]
+        self.cooldownTime = self.cooldown
+        self.castingTimeStep = [0.25, 0.00]
+        self.castingTime = self.castingTimeStep[0]
+        self.energyStep = [5, 0]
+        self.energy = self.energyStep[0]
+        self.timeStep = 5
+        self.damage = 2
+        self.shurikenCount = 5
+        self.scale = 0.50
+        self.rangeMax = 700
+        self.speed = 500
+        self.wave = False
+        self.singleTarget = True
+        self.criticalChance = 5
+
+       
+        self.soundStep = [pyglet.media.load('game/sounds/shuriken.wav', streaming=False)]
+        self.soundStep.append(self.soundStep[0])
+        self.sound = self.soundStep[0]
+        self.texture = textures.texture_load('game/sprites/ninja-shuriken-25x.png', 1, 4, 25, 25, 0.02, True)
+        self.list = []
+        
+    def cast(self, x, y):
+        active = super().cast(x, y)
+        if active == True:
+            if self.step == 1:
+                for index in range(self.shurikenCount):
+                    sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + int(self.caster.sprite.width / 2), self.caster.sprite.y + int(self.caster.sprite.height / 2), batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
+                    sprite.update(scale=self.scale)
+                    
+                    object = Missile(self.caster, sprite, self.speed)
+                    object.id = index * 20
+                    self.list.append(object)
+                    self.manager.missiles.append(object)
+
+                    object.moveX = x
+                    object.moveY = y
+
+                    object.activated = True
+            elif self.step == 0:
+                for object in self.list:
+                    if object.activated == True:
+                        object.moveX = x
+                        object.moveY = y    
+        
+    def loop(self, dt):
+        super().loop(dt)
+        
+        if len(self.list) == 0 and self.step == 1:
+            self.cooldownTime = self.timeStep
+
+        for object in self.list:
+            if object.activated == True:
+                if self.step == 0: 
+                    if self.stepFailed == False:
+                        object.moveLinear(dt)
+                    else:
+                        for object in self.list:
+                            object.range = self.rangeMax
+
+                elif self.step == 1:
+                    object.moveRotation(70, 0.10, self.caster.sprite.x + int(self.caster.sprite.width / 2), self.caster.sprite.y + int(self.caster.sprite.height / 2), object.id)
+                
+                colideValue = collision.collisionObject(object, object.angle, self.manager)
+
+                if (colideValue != None):
+                    if isinstance(colideValue, int):
+                        if colideValue == 1:
+                            object.range = self.rangeMax
+                    elif (colideValue.health > 0) and (not colideValue in object.targets):
+                        object.targets.append(colideValue)
+                        if self.wave == False:
+                            object.range = self.rangeMax
+                        
+                        if (self.singleTarget == True and object.damageDealt == False) or (self.singleTarget == False):
+                            object.damageDealt = True
+                            
+                            damageValue = self.damage * (1 - ((colideValue.armor + colideValue.bonus.armor)/ 100))
+
+                            criticalValue = random.randint(1,100)
+                            critical = False
+                            if criticalValue <= self.criticalChance:
+                                critical = True
+                                damageValue = damageValue * 2
+
+                            colideValue.health -= damageValue
+
+                            useCurrentText = False
+                            if damageValue > 0.5:
+                                for objectText in self.manager.floatingTexts:
+                                    if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50 and objectText.critical == False:
+                                        useCurrentText = True
+                                        objectText.value = objectText.value + damageValue
+                                        objectText.opacity = 0
+                                        objectText.text.y = objectText.unit.sprite.y
+                                if useCurrentText == False:
+                                    textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0, critical)
+                                    self.manager.floatingTexts.append(textDamage)
+
+
+                if (object.range >= self.rangeMax):
+                    self.list.remove(object)
+                    self.manager.missiles.remove(object)
+                    del object

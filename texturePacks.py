@@ -197,6 +197,73 @@ class TexturePack():
                            Texture(328, 0, 50, 50, 1.00, 'game/sprites/characters/skeleton-warrior/skeleton-death.png', sprite)]
             }
 
+        if self.textureName == 'skeleton-elite':
+            self.leftRightOnly = True
+            self.textureFiles = {
+                'stand' : [Texture(  7, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-stand.png', sprite),
+                           Texture( 71, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-stand.png', sprite),
+                           Texture(135, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-stand.png', sprite),
+                           Texture(199, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-stand.png', sprite),
+                           Texture(263, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-stand.png', sprite),
+                           Texture(327, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-stand.png', sprite),
+                           Texture(391, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-stand.png', sprite)],
+
+                'walk-left' : [Texture(  0, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite),
+                               Texture( 71, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite),
+                               Texture(135, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite),
+                               Texture(199, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite),
+                               Texture(263, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite),
+                               Texture(327, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite),
+                               Texture(391, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite),
+                               Texture(455, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite),
+                               Texture(519, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-left.png', sprite)],
+
+                'walk-right' : [Texture(  0, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite),
+                                Texture( 71, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite),
+                                Texture(135, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite),
+                                Texture(199, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite),
+                                Texture(263, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite),
+                                Texture(327, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite),
+                                Texture(391, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite),
+                                Texture(455, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite),
+                                Texture(519, 0, 50, 50, 0.05, 'game/sprites/characters/skeleton-elite/skeleton-move-right.png', sprite)],
+
+                'attack-right' : [Texture(  7, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture( 71, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(136, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(199, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(265, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(335, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(397, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(458, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(520, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(580, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(645, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(710, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite),
+                                  Texture(775, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-right.png', sprite)],
+
+                'attack-left' : [Texture(  7, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture( 71, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(136, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(199, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(260, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(320, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(385, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(452, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(520, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(580, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(645, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(710, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite),
+                                 Texture(770, 0, 55, 50, 0.01, 'game/sprites/characters/skeleton-elite/skeleton-attack-left.png', sprite)],
+
+                'death' : [Texture(  7, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite),
+                           Texture( 72, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite),
+                           Texture(135, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite),
+                           Texture(200, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite),
+                           Texture(265, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite),
+                           Texture(328, 0, 50, 50, 1.00, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite)]
+            }
+
         if self.textureName == 'dummy':
             self.leftRightOnly = True
             self.textureFiles = {

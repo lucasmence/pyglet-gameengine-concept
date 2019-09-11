@@ -88,7 +88,7 @@ class ArrowCone(abilities.SkillLinear):
             self.cooldown = attackSpeed
         
         result = super().cast(x, y)
-        if result == False:
+        if result == True:
             
             x1 = x  
             y1 = y
@@ -98,9 +98,10 @@ class ArrowCone(abilities.SkillLinear):
                 sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
                 sprite.update(scale=self.scale)
                 
-                object = abilities.Missile(self.caster.sprite, sprite, self.speed, self.caster.owner)
+                object = abilities.Missile(self.caster, sprite, self.speed)
                 self.list.append(object)
                 self.manager.missiles.append(object)
+                object.linearEnabled = True
 
                 object.speedX = self.speed
                 object.speedY = self.speed
@@ -110,7 +111,7 @@ class ArrowCone(abilities.SkillLinear):
 
                 newAngle = 6 * index
                 #if object.angle > 90:
-                #    newAngle = newAngle * -1
+                newAngle = newAngle * -1
                 object.angle = collision.angle(x1, object.sprite.x, y1, object.sprite.y) + newAngle
 
                 sprite.image.anchor_x = sprite.width / 2
@@ -145,9 +146,10 @@ class ArrowCone(abilities.SkillLinear):
                 sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
                 sprite.update(scale=self.scale)
                 
-                object = abilities.Missile(self.caster.sprite, sprite, self.speed, self.caster.owner)
+                object = abilities.Missile(self.caster, sprite, self.speed)
                 self.list.append(object)
                 self.manager.missiles.append(object)
+                object.linearEnabled = True
 
                 object.speedX = self.speed
                 object.speedY = self.speed
@@ -157,7 +159,7 @@ class ArrowCone(abilities.SkillLinear):
 
                 newAngle = -6 * index
                 #if object.angle > 90:
-                #    newAngle = newAngle * -1
+                newAngle = newAngle * -1
                 object.angle = collision.angle(x1, object.sprite.x, y1, object.sprite.y) + newAngle
 
                 sprite.image.anchor_x = sprite.width / 2

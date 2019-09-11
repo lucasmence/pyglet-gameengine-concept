@@ -32,7 +32,7 @@ class Hud(objects.Object):
         hudEIcon = HudIcon(mainBatch, 'E', 620, 40, None)
         self.icons.append(hudEIcon)
 
-        hudRIcon = HudIcon(mainBatch, 'R', 680, 40, None)
+        hudRIcon = HudIcon(mainBatch, 'R', 680, 40, 'icon-steel-storm.png')
         self.icons.append(hudRIcon)
 
         font.add_file('game/fonts/sprite_comic.ttf')

@@ -134,19 +134,19 @@ class Unit(objects.Object):
         if (self.alive == True and self.paused == False):
             
             if type == self.A and self.attack != None:
-                self.moving = self.attack.cast(x, y, self.attackSpeed)   
+                self.moving = not self.attack.cast(x, y, self.attackSpeed)   
             
             elif type == self.Q and self.skillQ != None:       
-                self.moving = self.skillQ.cast(x, y)
+                self.moving = not self.skillQ.cast(x, y)
             
             elif type == self.W and self.skillW != None:       
-                self.moving = self.skillW.cast(x, y)
+                self.moving = not self.skillW.cast(x, y)
             
             elif type == self.E and self.skillE != None:       
-                self.moving = self.skillE.cast(x, y)
+                self.moving = not self.skillE.cast(x, y)
             
             elif type == self.R and self.skillR != None:       
-                self.moving = self.skillR.cast(x, y)
+                self.moving = not self.skillR.cast(x, y)
             
             if (self.moving == False):
                 self.moveX = self.sprite.x

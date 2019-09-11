@@ -104,14 +104,19 @@ def overworld_units_spawn():
 
     enemiesList = []
     
-    for index in range(3):
-        enemy = characters.SkeletonWarrior(mainBatch, 400 + index * 20, 400 + index * 20, 13, manager)
+    #for index in range(3):
+    #    enemy = characters.SkeletonWarrior(mainBatch, 400 + index * 20, 400 + index * 20, 13, manager)
+    #    enemiesList.append(enemy)
+    #    manager.units.append(enemy)
+    
+    
+    for index in range(2):
+        enemy = characters.SkeletonArcher(mainBatch, 500 + index * 150, 300 + index * 150, 13, manager)
         enemiesList.append(enemy)
         manager.units.append(enemy)
     
-    
     for index in range(1):
-        enemy = characters.SkeletonArcher(mainBatch, 500 + index * 20, 300 + index * 20, 13, manager)
+        enemy = characters.SkeletonElite(mainBatch, 600 + index * 20, 400 + index * 20, 13, manager)
         enemiesList.append(enemy)
         manager.units.append(enemy)
 

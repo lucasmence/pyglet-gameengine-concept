@@ -37,6 +37,8 @@ class Hero(BaseUnit):
 
         self.skillQ = abilities.Shuriken(self, self.manager)
         self.skillW = abilities.ShieldBlock(self, self.manager)
+        self.skillR = abilities.SteelStorm(self, self.manager)
+
         self.attack = attackTypes.Slash(self, self.manager) 
 
         self.health = self.healthMax + self.bonus.healthMax
@@ -69,8 +71,9 @@ class SkeletonWarrior(BaseUnit):
         distance = collision.distance(self.diferenceX, self.diferenceY)
         super().update(dt)
 
-        if (collision.distance(self.diferenceX, self.diferenceY) <= 100):
-            self.cast(self.A, self.moveX, self.moveY)  
+        if  (self.diferenceX != 0) and (self.diferenceY != 0):
+            if (collision.distance(self.diferenceX, self.diferenceY) <= 100):
+                self.cast(self.A, self.moveX, self.moveY)  
 
 class SkeletonArcher(BaseUnit):  
     def __init__(self, mainBatch, positionX, positionY, owner, manager):    
@@ -98,8 +101,42 @@ class SkeletonArcher(BaseUnit):
         distance = collision.distance(self.diferenceX, self.diferenceY)
         super().update(dt)
 
-        if (collision.distance(self.diferenceX, self.diferenceY) <= 500):
-            self.cast(self.A, self.moveX, self.moveY)  
+        if  (self.diferenceX != 0) and (self.diferenceY != 0):
+            if (collision.distance(self.diferenceX, self.diferenceY) <= 500):
+                self.cast(self.A, self.moveX, self.moveY)  
+
+class SkeletonElite(BaseUnit):  
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
+        super().__init__(mainBatch, positionX, positionY, owner, manager)
+
+        self.model.load('skeleton-elite', '', manager)
+
+        self.name = 'skeleton-elite'
+        self.attackSpeed = 2.50
+        self.healthMax = 20
+        self.energyMax = 20 
+        self.energyRegeneration = 0.75
+        self.healthRegeneration = 0.10
+        self.armor = 20
+        self.movementSpeed = 15
+        self.minimumRange = 400
+
+        self.skillQ = abilities.ShieldBlock(self, self.manager)
+        self.attack = attackTypes.ArrowCone(self, self.manager) 
+
+        self.sprite.image = self.model.texturePack.textureFiles['stand'][0].sprite
+    
+    def update(self, dt):
+        self.moving = True
+        distance = collision.distance(self.diferenceX, self.diferenceY)
+        super().update(dt)
+
+        if  (self.diferenceX != 0) and (self.diferenceY != 0):
+            if (collision.distance(self.diferenceX, self.diferenceY) <= 400):
+                self.cast(self.A, self.moveX, self.moveY)  
+
+            if (self.skillQ.cooldownTime >= self.skillQ.cooldown):
+                self.cast(self.Q, self.moveX, self.moveY)  
    
 
 class SkeletonArcherHero(BaseUnit):  
