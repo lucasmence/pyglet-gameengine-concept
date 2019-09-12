@@ -21,9 +21,6 @@ class Slash(abilities.SkillLinear):
         self.castingTime = 0.50
         self.criticalChance = 10
 
-        self.missileStartPositionX = 25
-        self.missileStartPositionY = 25
-
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('slash', manager)
         del soundEnchanter
@@ -54,9 +51,6 @@ class Arrow(abilities.SkillLinear):
         self.singleTarget = True
         self.castingTime = 0.50
         self.criticalChance = 15
-
-        self.missileStartPositionX = 25
-        self.missileStartPositionY = 25
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('arrow', manager)
@@ -89,9 +83,6 @@ class ArrowCone(abilities.SkillLinear):
         self.singleTarget = True
         self.castingTime = 0.50
         self.criticalChance = 5
-
-        self.missileStartPositionX = 25
-        self.missileStartPositionY = 25
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('arrow', manager)

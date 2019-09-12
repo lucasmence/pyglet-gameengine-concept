@@ -230,53 +230,17 @@ class Skill(objects.Object):
         if self.cooldownTime < self.cooldown:    
             self.cooldownTime += dt 
 
-class SkillLinear(objects.Object):
-    def __init__(self, caster, manager):
-        super().__init__()
-        self.manager = manager
-        self.caster = caster
-        self.id = 0
-        self.name = 'skillLinear'
-        self.cooldown = 1
-        self.cooldownTime = self.cooldown 
-        self.castingTime = 0.25
-        self.rangeMax = 500
-        self.speed = 500
-        self.damage = 1
-        self.energy = 1
-        self.scale = 1
-        self.wave = False
-        self.singleTarget = True
-        self.criticalChance = 5
-
-        self.missileStartPositionX = int(self.caster.sprite.width / 2)
-        self.missileStartPositionY = int(self.caster.sprite.height / 2)
-       
-        self.sound = None
-        self.texture = None
-        self.list = []
-    
-    def destroy(self):
-        for object in self.list:
-            object.range = self.rangeMax
-        
+class SkillLinear(Skill):          
     def cast(self, x, y):
-        if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
-            self.caster.energy -= self.energy
-            self.cooldownTime = 0
-            self.caster.pausedTime = self.castingTime
-
+        activated = super().cast(x, y)
+        if activated == True:
             object = Missile(self.caster, None, self.speed)
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
-
-            if self.sound != None:
-                self.sound.play()
-            
-            return True
-        else:
-            return False
+        return activated
         
     def loop(self, dt):
+        super().loop(dt)
+
         for object in self.list:
             if (object.activated == True):
 
@@ -324,14 +288,9 @@ class SkillLinear(objects.Object):
                     self.manager.missiles.remove(object)
                     del object
 
-        if self.cooldownTime < self.cooldown:    
-            self.cooldownTime += dt 
-
-class SkillDoubleStep(objects.Object):
+class SkillDoubleStep(Skill):
     def __init__(self, caster, manager):
-        super().__init__()
-        self.manager = manager
-        self.caster = caster
+        super().__init__(caster, manager)
         self.id = 0
         self.name = 'skillDoubleStep'
         self.step = 0
@@ -349,33 +308,23 @@ class SkillDoubleStep(objects.Object):
         self.soundStep = [None, None]
         self.sound = self.soundStep[0]
         self.texture = None
-        self.list = []
-    
-    def destroy(self):
-        for object in self.list:
-            object.range = self.rangeMax
-        
+
     def cast(self, x, y):
-        if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
+        activated = super().cast(x, y)
+        if activated == True:
             self.stepFailed = False
             if self.step == 0:
                 self.step = 1
             elif self.step == 1:
                 self.step = 0
-            self.caster.energy -= self.energy
             self.energy = self.energyStep[self.step]
             self.cooldown = self.cooldownStep[self.step]
-            self.cooldownTime = 0
-            self.caster.pausedTime = self.castingTime
             self.castingTime = self.castingTimeStep[self.step]
 
             if self.sound != None:
-                self.sound.play()
                 self.sound = self.soundStep[self.step]
 
-            return True
-        else:
-            return False
+        return activated
         
     def loop(self, dt):
         if self.cooldownTime < self.cooldown or self.cooldownTime < self.timeStep:
@@ -388,53 +337,32 @@ class SkillDoubleStep(objects.Object):
             self.cooldownTime = 0
             self.castingTime = self.castingTimeStep[self.step]
 
-class SkillBuff(objects.Object):
+class SkillBuff(Skill):
     def __init__(self, caster, manager):
-        super().__init__()
-        self.manager = manager
-        self.caster = caster
+        super().__init__(caster, manager)
         self.id = 0
         self.name = 'skillBuff'
-        self.cooldown = 1
-        self.cooldownTime = self.cooldown 
-        self.castingTime = 0.25
         self.durationMax = 5
         self.duration = 0
-        self.energy = 1
-        self.scale = 1
         self.activated = False
-        self.list = []
-        
-        self.missileStartPositionX = 0
-        self.missileStartPositionY = 0
-       
-        self.sound = None
-        self.texture = None
-        self.sprite = None
     
     def destroy(self):
+        super().destroy()
         self.duration = self.durationMax
         
     def cast(self, x, y):
-        if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
-            self.caster.energy -= self.energy
-            self.cooldownTime = 0
-            self.caster.pausedTime = self.castingTime
-
+        activated = super().cast(x, y)
+        if activated == True:
             self.duration = 0
             if self.activated == False:
                 self.activated = True
                 if self.texture != None:
                     self.sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
                     self.sprite.update(scale=self.scale)
-                
-            self.sound.play()
-
-            return False
-        else:
-            return True
+        return activated
         
     def loop(self, dt):
+        super().loop(dt)
         if self.duration < self.durationMax and self.activated == True:
             self.duration += dt
             self.sprite.x = self.caster.sprite.x + self.missileStartPositionX
@@ -443,10 +371,6 @@ class SkillBuff(objects.Object):
             self.duration = 0
             self.activated = False
             self.sprite.delete()
-
-        if self.cooldownTime < self.cooldown:    
-            self.cooldownTime += dt 
-
 
 class Shuriken(SkillLinear):
     def __init__(self, caster, manager):
