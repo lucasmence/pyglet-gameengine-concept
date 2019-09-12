@@ -83,6 +83,7 @@ class ArrowCone(abilities.SkillLinear):
         self.singleTarget = True
         self.castingTime = 0.50
         self.criticalChance = 5
+        self.autoGenerateMissile = False
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('arrow', manager)
@@ -103,8 +104,6 @@ class ArrowCone(abilities.SkillLinear):
         result = super().cast(x, y)
 
         if result == True:
-
-            self.list[len(self.list)-1].range = self.rangeMax
             object = abilities.Missile(self.caster, None, self.speed)
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
             missileEnchanter = abilities.MissileEnchanter()

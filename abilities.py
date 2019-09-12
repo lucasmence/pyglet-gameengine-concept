@@ -230,10 +230,14 @@ class Skill(objects.Object):
         if self.cooldownTime < self.cooldown:    
             self.cooldownTime += dt 
 
-class SkillLinear(Skill):          
+class SkillLinear(Skill):    
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.autoGenerateMissile = True 
+            
     def cast(self, x, y):
         activated = super().cast(x, y)
-        if activated == True:
+        if activated == True and self.autoGenerateMissile == True:
             object = Missile(self.caster, None, self.speed)
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
         return activated
