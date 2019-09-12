@@ -137,7 +137,6 @@ class SkeletonElite(BaseUnit):
 
             if (self.skillQ.cooldownTime >= self.skillQ.cooldown):
                 self.cast(self.Q, self.moveX, self.moveY)  
-   
 
 class SkeletonArcherHero(BaseUnit):  
     def __init__(self, mainBatch, positionX, positionY, owner, manager):    

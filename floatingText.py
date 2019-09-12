@@ -37,7 +37,12 @@ class FloatingText(objects.Object):
         elif valueType == 1:
             self.red = 100
             self.green = 255
-            self.blue = 100    
+            self.blue = 100 
+            if critical == True:
+                self.text.text = self.text.text + '!'
+                self.text.font_size = 16
+                self.red = 50
+                self.blue = 50    
 
         self.type = 30
 

@@ -8,6 +8,7 @@ from game import objects
 from game import floatingText
 from game import texturePacks
 from game import sounds
+from game import damage
 
 class Missile(objects.Object):
     def __init__(self, caster, sprite, speed):
@@ -16,6 +17,8 @@ class Missile(objects.Object):
         self.type = 3
         self.caster = caster
 
+        self.damage = 0
+        self.lifesteal = 0
         self.moveX = 0
         self.moveY = 0
         self.range = 0
@@ -196,6 +199,7 @@ class Skill(objects.Object):
         self.rangeMax = 500
         self.speed = 500
         self.damage = 1
+        self.lifesteal = 0
         self.energy = 1
         self.scale = 1
         self.wave = False
@@ -260,32 +264,12 @@ class SkillLinear(Skill):
                         object.targets.append(colideValue)
                         if self.wave == False:
                             object.range = self.rangeMax
-                        
+                
                         if (self.singleTarget == True and object.damageDealt == False) or (self.singleTarget == False):
                             object.damageDealt = True
-                            
-                            damageValue = self.damage * (1 - ((colideValue.armor + colideValue.bonus.armor)/ 100))
 
-                            criticalValue = random.randint(1,100)
-                            critical = False
-                            if criticalValue <= self.criticalChance:
-                                critical = True
-                                damageValue = damageValue * 2
-
-                            colideValue.health -= damageValue
-
-                            useCurrentText = False
-                            if damageValue > 0.5:
-                                for objectText in self.manager.floatingTexts:
-                                    if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50 and objectText.critical == False:
-                                        useCurrentText = True
-                                        objectText.value = objectText.value + damageValue
-                                        objectText.opacity = 0
-                                        objectText.text.y = objectText.unit.sprite.y
-                                if useCurrentText == False:
-                                    textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0, critical)
-                                    self.manager.floatingTexts.append(textDamage)
-
+                            damageValue = damage.Damage(self.damage, self.lifesteal, self.criticalChance, self.caster, colideValue, self.manager)
+                            del damageValue
 
                 if (object.range >= self.rangeMax):
                     self.list.remove(object)
@@ -447,8 +431,9 @@ class SteelStorm(SkillDoubleStep):
         self.castingTime = self.castingTimeStep[0]
         self.energyStep = [5, 0]
         self.energy = self.energyStep[0]
-        self.timeStep = 5
-        self.damage = 2
+        self.timeStep = 7
+        self.damage = 3
+        self.damageLinear = 2
         self.shurikenCount = 5
         self.scale = 0.50
         self.rangeMax = 700
@@ -503,12 +488,14 @@ class SteelStorm(SkillDoubleStep):
             if object.activated == True:
                 if self.step == 0: 
                     if self.stepFailed == False:
+                        object.damage = self.damageLinear
                         object.moveLinear(dt)
                     else:
                         for object in self.list:
                             object.range = self.rangeMax
 
                 elif self.step == 1:
+                    object.damage = self.damage
                     object.moveRotation(70, 0.10, self.caster.sprite.x + int(self.caster.sprite.width / 2), self.caster.sprite.y + int(self.caster.sprite.height / 2), object.id)
                 
                 colideValue = collision.collisionObject(object, object.angle, self.manager)
@@ -525,28 +512,8 @@ class SteelStorm(SkillDoubleStep):
                         if (self.singleTarget == True and object.damageDealt == False) or (self.singleTarget == False):
                             object.damageDealt = True
                             
-                            damageValue = self.damage * (1 - ((colideValue.armor + colideValue.bonus.armor)/ 100))
-
-                            criticalValue = random.randint(1,100)
-                            critical = False
-                            if criticalValue <= self.criticalChance:
-                                critical = True
-                                damageValue = damageValue * 2
-
-                            colideValue.health -= damageValue
-
-                            useCurrentText = False
-                            if damageValue > 0.5:
-                                for objectText in self.manager.floatingTexts:
-                                    if objectText.unit == colideValue and objectText.valueType == 0 and objectText.opacity < 50 and objectText.critical == False:
-                                        useCurrentText = True
-                                        objectText.value = objectText.value + damageValue
-                                        objectText.opacity = 0
-                                        objectText.text.y = objectText.unit.sprite.y
-                                if useCurrentText == False:
-                                    textDamage = floatingText.FloatingText(self.caster.batch, colideValue, damageValue, 0, critical)
-                                    self.manager.floatingTexts.append(textDamage)
-
+                            damageValue = damage.Damage(object.damage, object.lifesteal, self.criticalChance, self.caster, colideValue, self.manager)
+                            del damageValue
 
                 if (object.range >= self.rangeMax):
                     self.list.remove(object)
