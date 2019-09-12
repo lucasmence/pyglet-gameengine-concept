@@ -189,7 +189,7 @@ class Skill(objects.Object):
         self.manager = manager
         self.caster = caster
         self.id = 0
-        self.name = 'skillLinear'
+        self.name = 'skill'
         self.cooldown = 1
         self.cooldownTime = self.cooldown 
         self.castingTime = 0.25
@@ -208,7 +208,27 @@ class Skill(objects.Object):
         self.sound = None
         self.texture = None
         self.list = []
+    
+    def destroy(self):
+        for object in self.list:
+            object.range = self.rangeMax
+        
+    def cast(self, x, y):
+        if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
+            self.caster.energy -= self.energy
+            self.cooldownTime = 0
+            self.caster.pausedTime = self.castingTime
 
+            if self.sound != None:
+                self.sound.play()
+            
+            return True
+        else:
+            return False
+        
+    def loop(self, dt):
+        if self.cooldownTime < self.cooldown:    
+            self.cooldownTime += dt 
 
 class SkillLinear(objects.Object):
     def __init__(self, caster, manager):

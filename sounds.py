@@ -14,7 +14,6 @@ class Sound():
         elif self.name == 'arrow':
             self.file = pyglet.media.load('game/sounds/arrow.wav', streaming=False)
            
-
 class SoundEnchanter():
     def load(self, name, manager):
         result = None

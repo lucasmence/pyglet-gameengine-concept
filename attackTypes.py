@@ -35,7 +35,6 @@ class Slash(abilities.SkillLinear):
         self.texture = tileset.texture
 
         self.scale = 0.75
-
         
     def cast(self, x, y, attackSpeed):
         if self.cooldown < attackSpeed:
@@ -70,7 +69,6 @@ class Arrow(abilities.SkillLinear):
         self.texture = tileset.texture
 
         self.scale = 1
-
         
     def cast(self, x, y, attackSpeed):
         if self.cooldown < attackSpeed:
@@ -106,8 +104,7 @@ class ArrowCone(abilities.SkillLinear):
         self.texture = tileset.texture
 
         self.scale = 1
-
-        
+       
     def cast(self, x, y, attackSpeed):
         if self.cooldown < attackSpeed:
             self.cooldown = attackSpeed
