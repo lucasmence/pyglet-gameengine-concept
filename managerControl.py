@@ -15,6 +15,8 @@ class Manager():
         self.buffs = []
         self.specialEffects = []
         self.texturePacks = []
+        self.sounds = []
+        self.tilesets = []
     
     def update(self, dt):
 

@@ -1,8 +1,41 @@
 import pyglet
 from game import models
+from game import textures
+
+class Tileset():
+    def __init__(self, textureName):
+        self.textureName = textureName
+        self.texture = None
+
+        if self.textureName == 'castle-brick':
+            self.texture = pyglet.image.load('game/sprites/block50x50.png')
+        elif self.textureName == 'shuriken':
+            self.texture = textures.texture_load('game/sprites/ninja-shuriken-25x.png', 1, 4, 25, 25, 0.02, True)    
+        elif self.textureName == 'shield':
+            self.texture = pyglet.image.load('game/sprites/characters/shield.png')
+        elif self.textureName == 'arrow':
+            self.texture = pyglet.image.load('game/sprites/characters/arrow.png')
+        elif self.textureName == 'slash':
+            self.texture = pyglet.image.load('game/sprites/characters/slash.png')  
+        elif self.textureName == 'dummy':
+            self.texture = pyglet.image.load('game/sprites/characters/dummy.png')     
+
+class TilesetEnchanter():
+    def load(self, textureName, manager):
+        result = None
+
+        for tileset in manager.tilesets:
+            if tileset.textureName == textureName:
+                result = tileset
+        
+        if result == None:
+            tileset = Tileset(textureName)
+            manager.tilesets.append(tileset)
+            result = tileset
+
+        return result
 
 class Texture():
-
     def __init__(self, aX, aY, aHeight, aWidth, aTime, aSpriteFile, aSprite):
         self.spriteFile = aSpriteFile
         self.time = aTime
@@ -13,7 +46,6 @@ class Texture():
         self.sprite = aSprite.image.from_image_sequence([pyglet.image.load(aSpriteFile).get_region(x=aX,y=aY,height=aHeight,width=aWidth)], 1, True)
 
 class TexturePack():
-
     def __init__(self, textureName):
         self.textureName = textureName
         self.textureFiles = None
@@ -321,3 +353,19 @@ class TexturePack():
                            Texture(265, 0, 50, 50, 0.15, 'game/sprites/characters/warrior/warrior-death.png', sprite),
                            Texture(328, 0, 50, 50, 1.00, 'game/sprites/characters/warrior/warrior-death.png', sprite)]
             }
+
+class TextureEnchanter():
+    def load(self, textureName, sprite, manager):
+        result = None
+
+        for texture in manager.texturePacks:
+            if texture.textureName == textureName:
+                result = texture
+        
+        if result == None:
+            texture = TexturePack(textureName)
+            texture.load(sprite)
+            manager.texturePacks.append(texture)
+            result = texture
+
+        return result

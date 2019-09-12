@@ -68,14 +68,9 @@ class Model():
 
         self.texturePack = None
 
-        for textures in manager.texturePacks:
-            if textures.textureName == name:
-                self.texturePack = textures
-        
-        if self.texturePack == None:
-            self.texturePack = texturePacks.TexturePack(name)
-            self.texturePack.load(self.sprite)
-            manager.texturePacks.append(self.texturePack)
+        textureEnchanter = texturePacks.TextureEnchanter()
+        self.texturePack = textureEnchanter.load(name, self.sprite, manager)
+        del textureEnchanter
 
         if animation == '':
             animation = 'stand'

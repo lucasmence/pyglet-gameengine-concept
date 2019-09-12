@@ -4,7 +4,8 @@ import math
 from game import textures
 from game import abilities
 from game import collision
-from game import abilities
+from game import texturePacks
+from game import sounds
 
 class Slash(abilities.SkillLinear):
     def __init__(self, caster, manager):
@@ -23,8 +24,16 @@ class Slash(abilities.SkillLinear):
         self.missileStartPositionX = 25
         self.missileStartPositionY = 25
 
-        self.sound = pyglet.media.load('game/sounds/slash.wav', streaming=False) 
-        self.texture = pyglet.image.load('game/sprites/characters/slash.png')
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('slash', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('slash', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+
         self.scale = 0.75
 
         
@@ -36,7 +45,7 @@ class Slash(abilities.SkillLinear):
 class Arrow(abilities.SkillLinear):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
-        self.name = 'slash'
+        self.name = 'arrow'
         self.cooldown = 1.5
         self.rangeMax = 500
         self.speed = 500
@@ -50,8 +59,16 @@ class Arrow(abilities.SkillLinear):
         self.missileStartPositionX = 25
         self.missileStartPositionY = 25
 
-        self.sound = pyglet.media.load('game/sounds/arrow.wav', streaming=False) 
-        self.texture = pyglet.image.load('game/sprites/characters/arrow.png')
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('arrow', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('arrow', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+
         self.scale = 1
 
         
@@ -64,7 +81,7 @@ class Arrow(abilities.SkillLinear):
 class ArrowCone(abilities.SkillLinear):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
-        self.name = 'slash'
+        self.name = 'arrow-cone'
         self.cooldown = 2.50
         self.rangeMax = 400
         self.speed = 400
@@ -78,8 +95,16 @@ class ArrowCone(abilities.SkillLinear):
         self.missileStartPositionX = 25
         self.missileStartPositionY = 25
 
-        self.sound = pyglet.media.load('game/sounds/arrow.wav', streaming=False) 
-        self.texture = pyglet.image.load('game/sprites/characters/arrow.png')
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('arrow', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('arrow', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+
         self.scale = 1
 
         
@@ -91,6 +116,7 @@ class ArrowCone(abilities.SkillLinear):
 
         if result == True:
 
+            self.list[len(self.list)-1].range = self.rangeMax
             object = abilities.Missile(self.caster, None, self.speed)
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
             missileEnchanter = abilities.MissileEnchanter()
@@ -99,106 +125,3 @@ class ArrowCone(abilities.SkillLinear):
 
         return result
             
-        '''
-            x1 = x  
-            y1 = y
-
-            for index in range(5):
-
-                sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
-                sprite.update(scale=self.scale)
-                
-                object = abilities.Missile(self.caster, sprite, self.speed)
-                self.list.append(object)
-                self.manager.missiles.append(object)
-                object.linearEnabled = True
-
-                object.speedX = self.speed
-                object.speedY = self.speed
-
-                diferenceX = x1 - object.sprite.x
-                diferenceY = y1 - object.sprite.y
-
-                newAngle = 6 * index
-                #if object.angle > 90:
-                newAngle = newAngle * -1
-                object.angle = collision.angle(x1, object.sprite.x, y1, object.sprite.y) + newAngle
-
-                sprite.image.anchor_x = sprite.width / 2
-                sprite.image.anchor_y = sprite.height / 2
-
-                sprite.rotation = object.angle *-1
-
-                if diferenceX < 0:
-                    diferenceX = diferenceX * -1
-                if diferenceY < 0:
-                    diferenceY = diferenceY * -1
-
-                if diferenceX > diferenceY:
-                    object.speedY = object.speedY * (diferenceY/diferenceX) + 36 * index
-                elif diferenceX < diferenceY:
-                    object.speedX = object.speedX * (diferenceX/diferenceY) - 36 * index
-                
-                if (object.sprite.x < x1):
-                    object.moveTypeX = 0
-                if (object.sprite.x > x1):
-                    object.moveTypeX = 1
-
-                if (object.sprite.y < y1):
-                    object.moveTypeY = 0
-                if (object.sprite.y > y1):
-                    object.moveTypeY = 1      
-
-                object.activated = True    
-            
-            for index in range(5):
-
-                sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
-                sprite.update(scale=self.scale)
-                
-                object = abilities.Missile(self.caster, sprite, self.speed)
-                self.list.append(object)
-                self.manager.missiles.append(object)
-                object.linearEnabled = True
-
-                object.speedX = self.speed
-                object.speedY = self.speed
-
-                diferenceX = x1 - object.sprite.x
-                diferenceY = y1 - object.sprite.y
-
-                newAngle = -6 * index
-                #if object.angle > 90:
-                newAngle = newAngle * -1
-                object.angle = collision.angle(x1, object.sprite.x, y1, object.sprite.y) + newAngle
-
-                sprite.image.anchor_x = sprite.width / 2
-                sprite.image.anchor_y = sprite.height / 2
-
-                sprite.rotation = object.angle *-1
-
-                if diferenceX < 0:
-                    diferenceX = diferenceX * -1
-                if diferenceY < 0:
-                    diferenceY = diferenceY * -1
-
-                if diferenceX > diferenceY:
-                    object.speedY = object.speedY * (diferenceY/diferenceX) - 36 * index
-                elif diferenceX < diferenceY:
-                    object.speedX = object.speedX * (diferenceX/diferenceY) + 36 * index
-                
-                if (object.sprite.x < x1):
-                    object.moveTypeX = 0
-                if (object.sprite.x > x1):
-                    object.moveTypeX = 1
-
-                if (object.sprite.y < y1):
-                    object.moveTypeY = 0
-                if (object.sprite.y > y1):
-                    object.moveTypeY = 1      
-
-                object.activated = True    
-            
-
-        return result
-        '''

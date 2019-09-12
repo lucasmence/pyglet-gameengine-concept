@@ -73,16 +73,16 @@ def overworld_map_spawn():
     global mainBatch,  manager
 
     for index in range(26):
-        manager.doodads.append(doodads.CastleBlock(mainBatch, 0, 125 + index * 25))
-        manager.doodads.append(doodads.CastleBlock(mainBatch, 900, 125 + index * 25))
-        manager.doodads.append(doodads.CastleBlock(mainBatch, 1175, 125 + index * 25))
+        manager.doodads.append(doodads.CastleBlock(mainBatch, 0, 125 + index * 25, manager))
+        manager.doodads.append(doodads.CastleBlock(mainBatch, 900, 125 + index * 25, manager))
+        manager.doodads.append(doodads.CastleBlock(mainBatch, 1175, 125 + index * 25, manager))
 
     for index in range(48):
-        manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 100))
-        manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 775))
+        manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 100, manager))
+        manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 775, manager))
     
     global testBlock
-    testBlock = doodads.CastleBlock(mainBatch, 200, 500)
+    testBlock = doodads.CastleBlock(mainBatch, 200, 500, manager)
     manager.doodads.append(testBlock)
     global execute
     execute = False

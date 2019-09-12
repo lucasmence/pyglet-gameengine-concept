@@ -6,6 +6,8 @@ from game import textures
 from game import collision
 from game import objects
 from game import floatingText
+from game import texturePacks
+from game import sounds
 
 class Missile(objects.Object):
     def __init__(self, caster, sprite, speed):
@@ -438,9 +440,16 @@ class Shuriken(SkillLinear):
         self.damage = 3
         self.energy = 2
         self.scale = 0.50
-       
-        self.sound = pyglet.media.load('game/sounds/shuriken.wav', streaming=False) 
-        self.texture = textures.texture_load('game/sprites/ninja-shuriken-25x.png', 1, 4, 25, 25, 0.02, True)
+
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('shuriken', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('shuriken', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture    
 
 class ShieldBlock(SkillBuff):
     def __init__(self, caster, manager):
@@ -456,8 +465,15 @@ class ShieldBlock(SkillBuff):
         self.missileStartPositionX = 0
         self.missileStartPositionY = 0
        
-        self.sound = pyglet.media.load('game/sounds/shield.wav', streaming=False) 
-        self.texture = pyglet.image.load('game/sprites/characters/shield.png')
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('shield', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('shield', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
     
     def cast(self, x, y):
         activate = self.activated
@@ -493,11 +509,17 @@ class SteelStorm(SkillDoubleStep):
         self.singleTarget = True
         self.criticalChance = 5
 
-       
-        self.soundStep = [pyglet.media.load('game/sounds/shuriken.wav', streaming=False)]
-        self.soundStep.append(self.soundStep[0])
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('shuriken', manager)
+        del soundEnchanter
+        self.soundStep = [sound.file, sound.file]
         self.sound = self.soundStep[0]
-        self.texture = textures.texture_load('game/sprites/ninja-shuriken-25x.png', 1, 4, 25, 25, 0.02, True)
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('shuriken', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+
         self.list = []
         
     def cast(self, x, y):
