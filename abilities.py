@@ -24,6 +24,7 @@ class Missile(objects.Object):
         self.activated = False
         self.speedX = speed
         self.speedY = speed
+        self.speed = speed
         self.angle = 0
         self.owner = self.caster.owner
         self.targets = []
@@ -41,7 +42,21 @@ class Missile(objects.Object):
 
     def __del__(self):
         self.activated = False
-        self.sprite.delete()
+        if self.sprite != None:
+            self.sprite.delete()
+    
+    def spawn(self, texture, initialX, initialY, positionX, positionY, scale, list, manager):
+        if self.sprite == None:
+            self.sprite = pyglet.sprite.Sprite(texture, initialX, initialY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
+            self.sprite.update(scale=scale)
+        
+            list.append(self)
+            manager.missiles.append(self)
+
+            self.moveX = positionX
+            self.moveY = positionY
+
+            self.activated = True
 
     def moveLinear(self, dt):
         if self.linearEnabled == False:
@@ -113,6 +128,58 @@ class Missile(objects.Object):
             self.rotationIndex += 1
         else:
             self.rotationEnabled = False
+
+class MissileEnchanter():
+    def coneArea(self, missile, count, angle, x, y, list, manager):
+
+        constants = [1, -1]
+
+        for constant in constants:
+            midpoint = int(constant * -1)
+            if midpoint < 0:
+                midpoint = 0
+            for index in range(count):
+                object = Missile(missile.caster, None, missile.speed)
+                object.spawn(missile.sprite.image, missile.sprite.x, missile.sprite.y, x, y, missile.sprite.scale, list, manager)
+
+                object.linearEnabled = True
+
+                diferenceX = x - object.sprite.x
+                diferenceY = y - object.sprite.y
+
+                newAngle = (int(angle / count) * (index + midpoint) * constant) * -1
+                object.angle = collision.angle(x, object.sprite.x, y, object.sprite.y) + newAngle
+
+                object.sprite.image.anchor_x = object.sprite.width / 2
+                object.sprite.image.anchor_y = object.sprite.height / 2
+
+                object.sprite.rotation = object.angle *-1
+
+                if diferenceX < 0:
+                    diferenceX = diferenceX * -1
+                if diferenceY < 0:
+                    diferenceY = diferenceY * -1
+
+                if diferenceX > diferenceY:
+                    object.speedY = object.speedY * (diferenceY/diferenceX) + ((6 * int(angle / count))  * (index + midpoint) * constant)
+                elif diferenceX < diferenceY:
+                    object.speedX = object.speedX * (diferenceX/diferenceY) - ((6 * int(angle / count)) * (index + midpoint) * constant) 
+                
+                if (object.sprite.x < x):
+                    object.moveTypeX = 0
+                if (object.sprite.x > x):
+                    object.moveTypeX = 1
+
+                if (object.sprite.y < y):
+                    object.moveTypeY = 0
+                if (object.sprite.y > y):
+                    object.moveTypeY = 1      
+
+                object.activated = True    
+
+        list.remove(missile)
+        manager.missiles.remove(missile)
+        del missile
         
 class Skill(objects.Object):
     def __init__(self, caster, manager):
@@ -177,17 +244,8 @@ class SkillLinear(objects.Object):
             self.cooldownTime = 0
             self.caster.pausedTime = self.castingTime
 
-            sprite = pyglet.sprite.Sprite(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, batch=self.caster.batch, group=pyglet.graphics.OrderedGroup(2))
-            sprite.update(scale=self.scale)
-            
-            object = Missile(self.caster, sprite, self.speed)
-            self.list.append(object)
-            self.manager.missiles.append(object)
-
-            object.moveX = x
-            object.moveY = y
-
-            object.activated = True
+            object = Missile(self.caster, None, self.speed)
+            object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
 
             if self.sound != None:
                 self.sound.play()

@@ -88,8 +88,18 @@ class ArrowCone(abilities.SkillLinear):
             self.cooldown = attackSpeed
         
         result = super().cast(x, y)
+
         if result == True:
+
+            object = abilities.Missile(self.caster, None, self.speed)
+            object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
+            missileEnchanter = abilities.MissileEnchanter()
+            missileEnchanter.coneArea(object, 4, 30, x, y, self.list, self.manager)
+            del missileEnchanter
+
+        return result
             
+        '''
             x1 = x  
             y1 = y
 
@@ -188,5 +198,7 @@ class ArrowCone(abilities.SkillLinear):
                     object.moveTypeY = 1      
 
                 object.activated = True    
+            
 
         return result
+        '''
