@@ -440,7 +440,7 @@ class ShurikenCone(SkillLinear):
             if object.range >= self.rangeMax and object.stage == 1 and object.situation == 0:
                 object.stage = 0
                 object.range = 0
-                object.updateDirection(self.caster.sprite.x, self.caster.sprite.y)
+                object.updateDirection(self.caster.sprite.x + int(self.caster.sprite.width / 2), self.caster.sprite.y + int(self.caster.sprite.height / 2))
 
         super().loop(dt)
                             
