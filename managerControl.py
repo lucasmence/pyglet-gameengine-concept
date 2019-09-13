@@ -28,6 +28,8 @@ class Manager():
 
         for hudObject in self.huds:
             for icon in hudObject.icons:
+                if icon.key == 'A' and hudObject.player.attack != None:
+                    icon.update(hudObject.player.attack.cooldownTime, hudObject.player.attack.cooldown)
                 if icon.key == 'Q' and hudObject.player.skillQ != None:
                     icon.update(hudObject.player.skillQ.cooldownTime, hudObject.player.skillQ.cooldown)
                 elif icon.key == 'W' and hudObject.player.skillW != None:

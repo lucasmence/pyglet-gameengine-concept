@@ -9,29 +9,7 @@ from game import units
 from game import doodads
 from game import hud
 from game import managerControl
-from game import collision
-
-def circle(x, y, radius, dt):
-    global testBlock
-    import math
-    global execute, i, iterations, c, s, dx, dy
-    if not execute:
-        execute = True
-        iterations = int(2*radius*math.pi) * 0.10
-        s = math.sin(2*math.pi / iterations)
-        c = math.cos(2*math.pi / iterations) 
-        i = 0
-        dx, dy = radius, 0
-
-    #for i in range(iterations+1): 
-    if i < int(iterations)+1:   
-        testBlock.sprite.x = (x + dx)
-        testBlock.sprite.y = (y + dy)
-        dx, dy = (dx*c - dy*s), (dy*c + dx*s)
-        i += 1
-    else:
-        execute = False
-        
+from game import collision        
 
 def display_window_preload():
     global window
@@ -80,12 +58,6 @@ def overworld_map_spawn():
     for index in range(48):
         manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 100, manager))
         manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 775, manager))
-    
-    global testBlock
-    testBlock = doodads.CastleBlock(mainBatch, 200, 500, manager)
-    manager.doodads.append(testBlock)
-    global execute
-    execute = False
 
 def constants_load():
     global started
@@ -104,10 +76,10 @@ def overworld_units_spawn():
 
     enemiesList = []
     
-    #for index in range(3):
-    #    enemy = characters.SkeletonWarrior(mainBatch, 400 + index * 20, 400 + index * 20, 13, manager)
-    #    enemiesList.append(enemy)
-    #    manager.units.append(enemy)
+    for index in range(3):
+        enemy = characters.SkeletonWarrior(mainBatch, 400 + index * 20, 400 + index * 20, 13, manager)
+        enemiesList.append(enemy)
+        manager.units.append(enemy)
     
     
     for index in range(2):
@@ -115,10 +87,10 @@ def overworld_units_spawn():
         enemiesList.append(enemy)
         manager.units.append(enemy)
     
-    for index in range(1):
-        enemy = characters.SkeletonElite(mainBatch, 600 + index * 20, 400 + index * 20, 13, manager)
-        enemiesList.append(enemy)
-        manager.units.append(enemy)
+    #for index in range(1):
+    #    enemy = characters.SkeletonElite(mainBatch, 600 + index * 20, 400 + index * 20, 13, manager)
+    #    enemiesList.append(enemy)
+    #    manager.units.append(enemy)
 
 def initialization():
 
@@ -172,8 +144,6 @@ def on_key_release(symbol, modifiers):
 
 def eventSkills(dt):
     global player, enemiesList, manager
-
-    circle(200, 500, 100, dt)
     
     playerIsAlive = False
     try:

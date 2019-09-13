@@ -40,6 +40,7 @@ class Hero(BaseUnit):
         self.skillR = abilities.SteelStorm(self, self.manager)
 
         self.attack = attackTypes.Slash(self, self.manager) 
+        self.attack.damage = 2
 
         self.health = self.healthMax + self.bonus.healthMax
 
