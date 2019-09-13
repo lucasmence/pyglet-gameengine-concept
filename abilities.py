@@ -24,6 +24,7 @@ class Missile(objects.Object):
         self.range = 0
         self.moveTypeX = 0
         self.moveTypeY = 0
+        self.stage = 0
         self.sprite = sprite
         self.player = self.caster.sprite
         self.activated = False
@@ -35,6 +36,7 @@ class Missile(objects.Object):
         self.targets = []
         self.damageDealt = False
         self.linearEnabled = False
+        self.situation = 0
 
         self.rotationSin = 0
         self.rotationCos = 0
@@ -62,6 +64,13 @@ class Missile(objects.Object):
             self.moveY = positionY
 
             self.activated = True
+    
+    def updateDirection(self, positionX, positionY):
+        self.linearEnabled = False
+        self.moveX = positionX
+        self.moveY = positionY
+        self.speedX = self.speed
+        self.speedY = self.speed
 
     def moveLinear(self, dt):
         if self.linearEnabled == False:
@@ -70,8 +79,6 @@ class Missile(objects.Object):
             diferenceY = self.moveY - self.sprite.y
 
             self.angle = collision.angle(self.moveX, self.sprite.x, self.moveY, self.sprite.y)
-
-            self.caster.angle = collision.angle(self.moveX, self.sprite.x, self.moveY, self.sprite.y)
 
             self.sprite.image.anchor_x = self.sprite.width / 2
             self.sprite.image.anchor_y = self.sprite.height / 2
@@ -146,6 +153,7 @@ class MissileEnchanter():
             for index in range(count):
                 object = Missile(missile.caster, None, missile.speed)
                 object.spawn(missile.sprite.image, missile.sprite.x, missile.sprite.y, x, y, missile.sprite.scale, list, manager)
+                object.stage = missile.stage
 
                 object.linearEnabled = True
 
@@ -222,6 +230,7 @@ class Skill(objects.Object):
             self.caster.energy -= self.energy
             self.cooldownTime = 0
             self.caster.pausedTime = self.castingTime
+            self.caster.angle = collision.angle(x, self.caster.sprite.x, y, self.caster.sprite.y)
 
             if self.sound != None:
                 self.sound.play()
@@ -252,29 +261,31 @@ class SkillLinear(Skill):
         for object in self.list:
             if (object.activated == True):
 
-                object.moveLinear(dt)               
-
-                colideValue = collision.collisionObject(object, object.angle, self.manager)
-
-                if (colideValue != None):
-                    if isinstance(colideValue, int):
-                        if colideValue == 1:
-                            object.range = self.rangeMax
-                    elif (colideValue.health > 0) and (not colideValue in object.targets):
-                        object.targets.append(colideValue)
-                        if self.wave == False:
-                            object.range = self.rangeMax
-                
-                        if (self.singleTarget == True and object.damageDealt == False) or (self.singleTarget == False):
-                            object.damageDealt = True
-
-                            damageValue = damage.Damage(self.damage, self.lifesteal, self.criticalChance, self.caster, colideValue, self.manager)
-                            del damageValue
-
                 if (object.range >= self.rangeMax):
                     self.list.remove(object)
                     self.manager.missiles.remove(object)
                     del object
+                else:
+                    object.moveLinear(dt)               
+
+                    colideValue = collision.collisionObject(object, object.angle, self.manager)
+
+                    if (colideValue != None):
+                        if isinstance(colideValue, int):
+                            if colideValue == 1:
+                                object.situation = 1
+                                object.range = self.rangeMax
+                        elif (colideValue.health > 0) and (not colideValue in object.targets):
+                            object.situation = 2
+                            object.targets.append(colideValue)
+                            if self.wave == False:
+                                object.range = self.rangeMax
+                    
+                            if (self.singleTarget == True and object.damageDealt == False) or (self.singleTarget == False):
+                                object.damageDealt = True
+
+                                damageValue = damage.Damage(self.damage, self.lifesteal, self.criticalChance, self.caster, colideValue, self.manager)
+                                del damageValue
 
 class SkillDoubleStep(Skill):
     def __init__(self, caster, manager):
@@ -383,6 +394,56 @@ class Shuriken(SkillLinear):
         del tilesetEnchanter
         self.texture = tileset.texture    
 
+class ShurikenCone(SkillLinear):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'shuriken-cone'
+        self.cooldown = 0.50
+        self.cooldownTime = self.cooldown
+        self.rangeMax = 200
+        self.speed = 550
+        self.damage = 1
+        self.lifesteal = 0.50
+        self.energy = 2
+        self.wave = False
+        self.singleTarget = True
+        self.castingTime = 0.15
+        self.criticalChance = 5
+        self.autoGenerateMissile = False
+        self.scale = 0.50
+
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('shuriken', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('shuriken', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+ 
+    def cast(self, x, y):
+        result = super().cast(x, y)
+
+        if result == True:
+            object = Missile(self.caster, None, self.speed)
+            object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
+            object.stage = 1
+            missileEnchanter = MissileEnchanter()
+            missileEnchanter.coneArea(object, 2, 45, x, y, self.list, self.manager)
+            del missileEnchanter
+
+        return result
+    
+    def loop(self, dt):
+        for object in self.list:
+            if object.range >= self.rangeMax and object.stage == 1 and object.situation == 0:
+                object.stage = 0
+                object.range = 0
+                object.updateDirection(self.caster.sprite.x, self.caster.sprite.y)
+
+        super().loop(dt)
+                            
 class ShieldBlock(SkillBuff):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)

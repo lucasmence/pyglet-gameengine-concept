@@ -35,7 +35,7 @@ class Hero(BaseUnit):
         self.armor = 10
         self.movementSpeed = 120
 
-        self.skillQ = abilities.Shuriken(self, self.manager)
+        self.skillQ = abilities.ShurikenCone(self, self.manager)
         self.skillW = abilities.ShieldBlock(self, self.manager)
         self.skillR = abilities.SteelStorm(self, self.manager)
 

@@ -48,7 +48,7 @@ class Heal():
         for objectText in manager.floatingTexts:
             if objectText.unit == target and objectText.valueType == 1 and objectText.opacity < 50 and objectText.critical == False:
                 useCurrentText = True
-                objectText.value = objectText.value + damageValue
+                objectText.value = objectText.value + heal
                 objectText.opacity = 0
                 objectText.text.y = objectText.unit.sprite.y
 
