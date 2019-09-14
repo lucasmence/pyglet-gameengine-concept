@@ -355,6 +355,58 @@ class TexturePack():
                            Texture(265, 0, 50, 50, 0.15, 'game/sprites/characters/warrior/warrior-death.png', sprite),
                            Texture(328, 0, 50, 50, 1.00, 'game/sprites/characters/warrior/warrior-death.png', sprite)]
             }
+        
+        if self.textureName == 'mini-boss':
+            self.leftRightOnly = True
+            self.textureFiles = {
+                'stand' : [Texture(  7, 0, 50, 50, 0.30, 'game/sprites/characters/mini-boss/warrior-stand.png', sprite),
+                           Texture(  7, 0, 50, 50, 0.30, 'game/sprites/characters/mini-boss/warrior-stand.png', sprite),
+                           Texture( 71, 0, 50, 50, 0.30, 'game/sprites/characters/mini-boss/warrior-stand.png', sprite),
+                           Texture(135, 0, 50, 50, 0.30, 'game/sprites/characters/mini-boss/warrior-stand.png', sprite),
+                           Texture( 71, 0, 50, 50, 0.30, 'game/sprites/characters/mini-boss/warrior-stand.png', sprite),
+                           Texture(  7, 0, 50, 50, 0.30, 'game/sprites/characters/mini-boss/warrior-stand.png', sprite)],
+
+                'walk-left' : [Texture(  0, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite),
+                               Texture( 71, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite),
+                               Texture(135, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite),
+                               Texture(199, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite),
+                               Texture(263, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite),
+                               Texture(327, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite),
+                               Texture(391, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite),
+                               Texture(455, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite),
+                               Texture(519, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-left.png', sprite)],
+
+                'walk-right' : [Texture(  0, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite),
+                                Texture( 71, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite),
+                                Texture(135, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite),
+                                Texture(199, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite),
+                                Texture(263, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite),
+                                Texture(327, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite),
+                                Texture(391, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite),
+                                Texture(455, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite),
+                                Texture(519, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-move-right.png', sprite)],
+
+                'attack-right' : [Texture(  7, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-right.png', sprite),
+                                  Texture( 72, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-right.png', sprite),
+                                  Texture(136, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-right.png', sprite),
+                                  Texture(201, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-right.png', sprite),
+                                  Texture(267, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-right.png', sprite),
+                                  Texture(330, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-right.png', sprite)],
+
+                'attack-left' : [Texture(  8, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-left.png', sprite),
+                                 Texture( 69, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-left.png', sprite),
+                                 Texture(134, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-left.png', sprite),
+                                 Texture(196, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-left.png', sprite),
+                                 Texture(260, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-left.png', sprite),
+                                 Texture(324, 0, 50, 50, 0.05, 'game/sprites/characters/mini-boss/warrior-attack-left.png', sprite)],
+
+                'death' : [Texture(  7, 0, 50, 50, 0.15, 'game/sprites/characters/mini-boss/warrior-death.png', sprite),
+                           Texture( 72, 0, 50, 50, 0.15, 'game/sprites/characters/mini-boss/warrior-death.png', sprite),
+                           Texture(135, 0, 50, 50, 0.15, 'game/sprites/characters/mini-boss/warrior-death.png', sprite),
+                           Texture(200, 0, 50, 50, 0.15, 'game/sprites/characters/mini-boss/warrior-death.png', sprite),
+                           Texture(265, 0, 50, 50, 0.15, 'game/sprites/characters/mini-boss/warrior-death.png', sprite),
+                           Texture(328, 0, 50, 50, 5.00, 'game/sprites/characters/mini-boss/warrior-death.png', sprite)]
+            }
 
 class TextureEnchanter():
     def load(self, textureName, sprite, manager):

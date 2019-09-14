@@ -28,21 +28,21 @@ class Manager():
 
         for hudObject in self.huds:
             for icon in hudObject.icons:
-                if icon.key == 'A' and hudObject.player.attack != None:
-                    icon.update(hudObject.player.attack.cooldownTime, hudObject.player.attack.cooldown)
-                if icon.key == 'Q' and hudObject.player.skillQ != None:
-                    icon.update(hudObject.player.skillQ.cooldownTime, hudObject.player.skillQ.cooldown)
-                elif icon.key == 'W' and hudObject.player.skillW != None:
-                    icon.update(hudObject.player.skillW.cooldownTime, hudObject.player.skillW.cooldown)
-                elif icon.key == 'E' and hudObject.player.skillE != None:
-                    icon.update(hudObject.player.skillE.cooldownTime, hudObject.player.skillE.cooldown)
-                elif icon.key == 'R' and hudObject.player.skillR != None:
-                    icon.update(hudObject.player.skillR.cooldownTime, hudObject.player.skillR.cooldown)
+                if icon.key == 'A' and hudObject.unit.attack != None:
+                    icon.update(hudObject.unit.attack.cooldownTime, hudObject.unit.attack.cooldown)
+                if icon.key == 'Q' and hudObject.unit.skillQ != None:
+                    icon.update(hudObject.unit.skillQ.cooldownTime, hudObject.unit.skillQ.cooldown)
+                elif icon.key == 'W' and hudObject.unit.skillW != None:
+                    icon.update(hudObject.unit.skillW.cooldownTime, hudObject.unit.skillW.cooldown)
+                elif icon.key == 'E' and hudObject.unit.skillE != None:
+                    icon.update(hudObject.unit.skillE.cooldownTime, hudObject.unit.skillE.cooldown)
+                elif icon.key == 'R' and hudObject.unit.skillR != None:
+                    icon.update(hudObject.unit.skillR.cooldownTime, hudObject.unit.skillR.cooldown)
             for bar in hudObject.bars:
                 if bar.barType == 0:
-                    bar.update(hudObject.player.health, hudObject.player.healthMax + hudObject.player.bonus.healthMax)
+                    bar.update(hudObject.unit.health, hudObject.unit.healthMax + hudObject.unit.bonus.healthMax)
                 else:
-                    bar.update(hudObject.player.energy, hudObject.player.energyMax + hudObject.player.bonus.energyMax)
+                    bar.update(hudObject.unit.energy, hudObject.unit.energyMax + hudObject.unit.bonus.energyMax)
 
         for floatingTextObject in self.floatingTexts:
             if floatingTextObject.opacity < 100:

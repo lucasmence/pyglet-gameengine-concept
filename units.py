@@ -64,6 +64,7 @@ class Unit(objects.Object):
         self.W = 2
         self.E = 3
         self.R = 4
+        self.icon = 'icon-unit-unknown'
     
     def kill(self):
         if self.deathAnimation == True:
@@ -267,9 +268,9 @@ class DeathAnimation(Unit):
 class Bar():
     def __init__(self, mainBatch, unit):
 
-        self.texture = pyglet.image.load('game/sprites/healthbar.png')
+        self.texture = pyglet.image.load('game/sprites/hud/healthbar.png')
         self.unit = unit
-        self.sprite = pyglet.sprite.Sprite(textures.texture_load('game/sprites/healthbar.png', 1, 1, 0, 100, 1, False), x=unit.sprite.x + unit.sprite.width * 0.20, y=unit.sprite.y + unit.sprite.height, batch=mainBatch, group=pyglet.graphics.OrderedGroup(2))
+        self.sprite = pyglet.sprite.Sprite(textures.texture_load('game/sprites/hud/healthbar.png', 1, 1, 0, 100, 1, False), x=unit.sprite.x + unit.sprite.width * 0.20, y=unit.sprite.y + unit.sprite.height, batch=mainBatch, group=pyglet.graphics.OrderedGroup(2))
         self.sprite.update(scale_y = 0.50, scale_x = 0.80)
         self.animation100 = self.sprite.image.from_image_sequence([self.texture.get_region(x=450,y=0,height=15,width=50)], 1, True)
         self.animation090 = self.sprite.image.from_image_sequence([self.texture.get_region(x=400,y=0,height=15,width=50)], 1, True)

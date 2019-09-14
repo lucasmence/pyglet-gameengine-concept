@@ -20,6 +20,7 @@ class Slash(abilities.SkillLinear):
         self.singleTarget = True
         self.castingTime = 0.50
         self.criticalChance = 10
+        self.icon = 'icon-attack'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('slash', manager)

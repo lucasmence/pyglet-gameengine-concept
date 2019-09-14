@@ -9,7 +9,8 @@ from game import units
 from game import doodads
 from game import hud
 from game import managerControl
-from game import collision        
+from game import collision   
+from game import characters     
 
 def display_window_preload():
     global window
@@ -52,7 +53,7 @@ def overworld_map_spawn():
 
     for index in range(29):
         manager.doodads.append(doodads.CastleBlock(mainBatch, 0, 50 + index * 25, manager))
-        manager.doodads.append(doodads.CastleBlock(mainBatch, 900, 50 + index * 25, manager))
+        #manager.doodads.append(doodads.CastleBlock(mainBatch, 900, 50 + index * 25, manager))
         manager.doodads.append(doodads.CastleBlock(mainBatch, 1175, 50 + index * 25, manager))
 
     for index in range(48):
@@ -68,13 +69,24 @@ def constants_load():
     mouseY = 0
 
 def overworld_units_spawn():
-    from game import characters
-    global player, mainBatch, enemiesList, manager
+    global player, mainBatch, enemiesList, manager, step
+
+    step = 0
 
     player = characters.Hero(mainBatch, 200, 200, 1, manager)
     manager.units.append(player)    
 
     enemiesList = []
+
+
+    '''
+    for index in range(1):
+        enemy = characters.Boss(mainBatch, 700 + index * 20, 400 + index * 20, 13, manager)
+        enemiesList.append(enemy)
+        manager.units.append(enemy)
+    '''
+
+   
     
     for index in range(3):
         enemy = characters.SkeletonWarrior(mainBatch, 400 + index * 20, 400 + index * 20, 13, manager)
@@ -91,6 +103,15 @@ def overworld_units_spawn():
         enemy = characters.SkeletonElite(mainBatch, 600 + index * 20, 400 + index * 20, 13, manager)
         enemiesList.append(enemy)
         manager.units.append(enemy)
+    
+    global music
+
+    music = pyglet.media.Player()
+    music.queue(pyglet.media.load('game/sounds/stage.wav'))
+    music.loop = True
+    music.volume = 0.40
+    music.queue(pyglet.media.load('game/sounds/boss.wav'))
+    music.queue(pyglet.media.load('game/sounds/clear.wav'))
 
 def initialization():
 
@@ -99,16 +120,18 @@ def initialization():
     overworld_map_spawn()  
     overworld_units_spawn()
     display_hud()
-    constants_load()
+    constants_load() 
 
 ############## BEFORE EVENTS ####################
 initialization()
 
 @window.event
 def on_draw():
+    global music
     window.clear()
     if started:
         mainBatch.draw()
+        music.play()
     else:
         text_intro.draw()
     display_fps.draw()
@@ -143,7 +166,7 @@ def on_key_release(symbol, modifiers):
     pass
 
 def eventSkills(dt):
-    global player, enemiesList, manager
+    global player, enemiesList, manager, step
     
     playerIsAlive = False
     try:
@@ -156,9 +179,25 @@ def eventSkills(dt):
         manager.update(dt)
 
         for enemy in enemiesList:
-            enemy.angle = collision.angle(player.sprite.x, enemy.sprite.x, player.sprite.y, enemy.sprite.y)
-            enemy.moveX = player.sprite.x
-            enemy.moveY = player.sprite.y
+            if player.health > 0:
+                enemy.angle = collision.angle(player.sprite.x, enemy.sprite.x, player.sprite.y, enemy.sprite.y)
+                enemy.moveX = player.sprite.x
+                enemy.moveY = player.sprite.y
+            if enemy.health <= 0:
+                enemiesList.remove(enemy)
+
+    global music  
+    if step == 0 and len(enemiesList) == 0:
+        step = 1
+        music.next_source()
+        for index in range(1):
+            enemy = characters.Boss(mainBatch, 900 + index * 20, 500 + index * 20, 13, manager)
+            enemiesList.append(enemy)
+            manager.units.append(enemy)
+    elif step == 1 and len(enemiesList) == 0:
+        step = 2
+        music.loop = False
+        music.next_source()   
 
 def update(dt):
     if started:

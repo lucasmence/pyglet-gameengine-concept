@@ -213,6 +213,9 @@ class Skill(objects.Object):
         self.wave = False
         self.singleTarget = True
         self.criticalChance = 5
+        self.icon = 'icon-unknown'
+        self.title = 'An ability'
+        self.description = 'No ability description available.'
 
         self.missileStartPositionX = int(self.caster.sprite.width / 2)
         self.missileStartPositionY = int(self.caster.sprite.height / 2)
@@ -411,6 +414,7 @@ class ShurikenCone(SkillLinear):
         self.criticalChance = 5
         self.autoGenerateMissile = False
         self.scale = 0.50
+        self.icon = 'icon-shuriken'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('shuriken', manager)
@@ -454,6 +458,7 @@ class ShieldBlock(SkillBuff):
         self.durationMax = 5
         self.energy = 3
         self.scale = 1
+        self.icon = 'icon-shield-block'
         
         self.missileStartPositionX = 0
         self.missileStartPositionY = 0
@@ -538,6 +543,7 @@ class SteelStorm(SkillDoubleStep):
         self.wave = False
         self.singleTarget = True
         self.criticalChance = 5
+        self.icon = 'icon-steel-storm'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('shuriken', manager)

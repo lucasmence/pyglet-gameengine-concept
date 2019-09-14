@@ -4,14 +4,14 @@ from game import objects
 from game import textures
 
 class Hud(objects.Object):
-    def __init__(self, mainBatch, player):
+    def __init__(self, mainBatch, unit):
         super().__init__()
 
         self.icons = []
         self.bars = []
         self.texts = []
         self.frame = None
-        self.player = player
+        self.unit = unit
 
     def load(self, mainBatch):
         hudFrame = HudFrame(mainBatch, 0, 0)
@@ -23,22 +23,58 @@ class Hud(objects.Object):
         hudEnergyBar = HudBar(mainBatch, 1, 120, 6)
         self.bars.append(hudEnergyBar)
 
-        hudAttackIcon = HudIcon(mainBatch, 'A', 109, 71, 'icon-attack.png')
+        icon = 0
+        title = 1
+        description = 2
+
+        resource = [None, None, None]
+        if self.unit.attack != None:
+            resource[icon] = self.unit.attack.icon
+            resource[title] = self.unit.attack.title
+            resource[description] = self.unit.attack.description
+
+        hudAttackIcon = HudIcon(mainBatch, 'A', 109, 71, resource[icon], resource[title], resource[description])
         self.icons.append(hudAttackIcon)
 
-        hudQIcon = HudIcon(mainBatch, 'Q', 154, 71, 'icon-shuriken.png')
+        resource.clear()
+        resource = [None, None, None]
+        if self.unit.skillQ != None:
+            resource[icon] = self.unit.skillQ.icon
+            resource[title] = self.unit.skillQ.title
+            resource[description] = self.unit.skillQ.description
+
+        hudQIcon = HudIcon(mainBatch, 'Q', 154, 71, resource[icon], resource[title], resource[description])
         self.icons.append(hudQIcon)
 
-        hudWIcon = HudIcon(mainBatch, 'W', 199, 71, 'icon-shield-block.png')
+        resource.clear()
+        resource = [None, None, None]
+        if self.unit.skillW != None:
+            resource[icon] = self.unit.skillW.icon
+            resource[title] = self.unit.skillW.title
+            resource[description] = self.unit.skillW.description
+        hudWIcon = HudIcon(mainBatch, 'W', 199, 71, resource[icon], resource[title], resource[description])
         self.icons.append(hudWIcon)
 
-        hudEIcon = HudIcon(mainBatch, 'E', 244, 71, None)
+        resource.clear()
+        resource = [None, None, None]
+        if self.unit.skillE != None:
+            resource[icon] = self.unit.skillE.icon
+            resource[title] = self.unit.skillE.title
+            resource[description] = self.unit.skillE.description
+        hudEIcon = HudIcon(mainBatch, 'E', 244, 71, resource[icon], resource[title], resource[description])
         self.icons.append(hudEIcon)
 
-        hudRIcon = HudIcon(mainBatch, 'R', 289, 71, 'icon-steel-storm.png')
+        resource.clear()
+        resource = [None, None, None]
+        if self.unit.skillR != None:
+            resource[icon] = self.unit.skillR.icon
+            resource[title] = self.unit.skillR.title
+            resource[description] = self.unit.skillR.description
+        hudRIcon = HudIcon(mainBatch, 'R', 289, 71, resource[icon], resource[title], resource[description])
         self.icons.append(hudRIcon)
 
-        hudUnitIcon = HudUnitIcon(mainBatch, 'unit', 28, 5, 'hud/icon-warrior.png')
+        resource.clear()
+        hudUnitIcon = HudUnitIcon(mainBatch, 'unit', 28, 5, self.unit.icon)
         self.icons.append(hudUnitIcon)
 
         font.add_file('game/fonts/sprite_comic.ttf')
@@ -60,36 +96,39 @@ class HudUnitIcon():
         self.scale = 0.70
 
         if (texture == None):
-            texture = 'hud/icon-model-circle.png'
+            texture = 'hud/icon-unit-unknown'
 
         self.key = key
 
-        self.texture = pyglet.image.load('game/sprites/'+texture)
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/'+texture), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))
+        self.texture = pyglet.image.load('game/sprites/hud/'+texture+'.png')
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/hud/'+texture+'.png'), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))
         self.sprite.update(scale=self.scale)
 
 class HudIcon():
-    def __init__(self, mainBatch, key, positionX ,positionY, texture):
+    def __init__(self, mainBatch, key, positionX ,positionY, texture, title, description):
 
         self.scale = 0.40
 
         if (texture == None):
-            texture = 'icon-none.png'
+            texture = 'icon-none'
 
         self.key = key
 
-        self.texture = pyglet.image.load('game/sprites/'+texture)
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/'+texture), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))
+        self.texture = pyglet.image.load('game/sprites/hud/'+texture+'.png')
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/hud/'+texture+'.png'), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))
         self.sprite.update(scale=self.scale)
 
-        self.textureLoad = pyglet.image.load('game/sprites/frame-load-icon.png')
-        self.spriteLoad = pyglet.sprite.Sprite(textures.texture_load('game/sprites/frame-load-icon.png', 1, 1, 0, 100, 1, False), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(11))
+        self.textureLoad = pyglet.image.load('game/sprites/hud/frame-load-icon.png')
+        self.spriteLoad = pyglet.sprite.Sprite(textures.texture_load('game/sprites/hud/frame-load-icon.png', 1, 1, 0, 100, 1, False), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(11))
         self.spriteLoad.opacity = 200
         self.spriteLoad.update(scale=0.80)
 
         self.text = pyglet.text.Label('', x=positionX + 7, y=positionY + 10, batch=mainBatch, group=pyglet.graphics.OrderedGroup(12))
         self.text.font_name = 'Sprite Comic'
         self.text.font_size = 8
+
+        self.title = title
+        self.description = description
 
         self.animationLoad100 = self.spriteLoad.image.from_image_sequence([self.textureLoad.get_region(x=450,y=0,height=50,width=50)], 0.01, True)
         self.animationLoad090 = self.spriteLoad.image.from_image_sequence([self.textureLoad.get_region(x=400,y=0,height=50,width=50)], 0.01, True)
@@ -143,12 +182,12 @@ class HudBar():
     def __init__(self, mainBatch, barType, positionX ,positionY):
 
         if barType == 0:    
-            self.texture = pyglet.image.load('game/sprites/healthbar.png')
+            self.texture = pyglet.image.load('game/sprites/hud/healthbar.png')
         else:
-            self.texture = pyglet.image.load('game/sprites/energybar.png')
+            self.texture = pyglet.image.load('game/sprites/hud/energybar.png')
         
         self.barType = barType
-        self.sprite = pyglet.sprite.Sprite(textures.texture_load('game/sprites/healthbar.png', 1, 1, 0, 100, 1, False), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(11))
+        self.sprite = pyglet.sprite.Sprite(textures.texture_load('game/sprites/hud/healthbar.png', 1, 1, 0, 100, 1, False), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(11))
         self.sprite.update(scale_y = 1, scale_x = 4)
         self.animation100 = self.sprite.image.from_image_sequence([self.texture.get_region(x=450,y=0,height=15,width=50)], 1, True)
         self.animation090 = self.sprite.image.from_image_sequence([self.texture.get_region(x=400,y=0,height=15,width=50)], 1, True)
