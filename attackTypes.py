@@ -7,7 +7,33 @@ from game import collision
 from game import texturePacks
 from game import sounds
 
-class Slash(abilities.SkillLinear):
+class Attack(abilities.SkillLinear):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'attack'
+        self.cooldown = 0.5
+        self.rangeMax = 50
+        self.speed = 500
+        self.damage = 1
+        self.energy = 0
+        self.wave = True
+        self.singleTarget = True
+        self.castingTime = 0.50
+        self.criticalChance = 10
+        self.icon = 'icon-attack'
+        self.sound = None
+        self.texture = None
+        self.scale = 1
+        
+    def cast(self, x, y, attackSpeed):
+        if self.cooldown < attackSpeed:
+            self.cooldown = attackSpeed
+        activated = super().cast(x, y)
+        if activated == True and len(self.list) > 0:
+            self.list[len(self.list)-1].damage = self.damage + self.caster.bonus.attack
+        return activated
+
+class Slash(Attack):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
         self.name = 'slash'
@@ -21,6 +47,7 @@ class Slash(abilities.SkillLinear):
         self.castingTime = 0.50
         self.criticalChance = 10
         self.icon = 'icon-attack'
+        self.scale = 0.75
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('slash', manager)
@@ -30,16 +57,9 @@ class Slash(abilities.SkillLinear):
         tilesetEnchanter = texturePacks.TilesetEnchanter()
         tileset = tilesetEnchanter.load('slash', manager)
         del tilesetEnchanter
-        self.texture = tileset.texture
+        self.texture = tileset.texture 
 
-        self.scale = 0.75
-        
-    def cast(self, x, y, attackSpeed):
-        if self.cooldown < attackSpeed:
-            self.cooldown = attackSpeed
-        return super().cast(x, y)
-
-class Arrow(abilities.SkillLinear):
+class Arrow(Attack):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
         self.name = 'arrow'
@@ -52,6 +72,7 @@ class Arrow(abilities.SkillLinear):
         self.singleTarget = True
         self.castingTime = 0.50
         self.criticalChance = 15
+        self.scale = 1
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('arrow', manager)
@@ -63,15 +84,7 @@ class Arrow(abilities.SkillLinear):
         del tilesetEnchanter
         self.texture = tileset.texture
 
-        self.scale = 1
-        
-    def cast(self, x, y, attackSpeed):
-        if self.cooldown < attackSpeed:
-            self.cooldown = attackSpeed
-        
-        return super().cast(x, y)
-
-class ArrowCone(abilities.SkillLinear):
+class ArrowCone(Attack):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
         self.name = 'arrow-cone'
@@ -99,10 +112,7 @@ class ArrowCone(abilities.SkillLinear):
         self.scale = 1
        
     def cast(self, x, y, attackSpeed):
-        if self.cooldown < attackSpeed:
-            self.cooldown = attackSpeed
-        
-        result = super().cast(x, y)
+        result = super().cast(x, y, attackSpeed)
 
         if result == True:
             object = abilities.Missile(self.caster, None, self.speed)

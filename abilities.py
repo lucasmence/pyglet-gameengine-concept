@@ -256,6 +256,7 @@ class SkillLinear(Skill):
         if activated == True and self.autoGenerateMissile == True:
             object = Missile(self.caster, None, self.speed)
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
+            object.damage = self.damage
         return activated
         
     def loop(self, dt):
@@ -287,7 +288,7 @@ class SkillLinear(Skill):
                             if (self.singleTarget == True and object.damageDealt == False) or (self.singleTarget == False):
                                 object.damageDealt = True
 
-                                damageValue = damage.Damage(self.damage, self.lifesteal, self.criticalChance, self.caster, colideValue, self.manager)
+                                damageValue = damage.Damage(object.damage, self.lifesteal, self.criticalChance, self.caster, colideValue, self.manager)
                                 del damageValue
 
 class SkillDoubleStep(Skill):
@@ -478,12 +479,14 @@ class ShieldBlock(SkillBuff):
         super().cast(x, y)
         if activate == False and self.activated == True:
             self.caster.bonus.armor = self.caster.bonus.armor + 50
+            self.caster.bonus.attack = self.caster.bonus.attack + 1
     
     def loop(self, dt):
         activate = self.activated
         super().loop(dt)
         if activate == True and self.activated == False:
             self.caster.bonus.armor = self.caster.bonus.armor - 50
+            self.caster.bonus.attack = self.caster.bonus.attack - 1
 
 class BlackShield(SkillBuff):
     def __init__(self, caster, manager):

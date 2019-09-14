@@ -27,6 +27,7 @@ class Manager():
                 del unitObject 
 
         for hudObject in self.huds:
+            hudObject.update()
             for icon in hudObject.icons:
                 if icon.key == 'A' and hudObject.unit.attack != None:
                     icon.update(hudObject.unit.attack.cooldownTime, hudObject.unit.attack.cooldown)

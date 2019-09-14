@@ -74,16 +74,57 @@ class Hud(objects.Object):
         self.icons.append(hudRIcon)
 
         resource.clear()
-        hudUnitIcon = HudUnitIcon(mainBatch, 'unit', 28, 5, self.unit.icon)
+        hudUnitIcon = HudUnitIcon(mainBatch, 'unit', 28, 45, self.unit.icon)
         self.icons.append(hudUnitIcon)
 
+        text = pyglet.text.Label('Armor:', x=20, y=10, batch=mainBatch, group=pyglet.graphics.OrderedGroup(12))
+        text.font_name = 'Sprite Comic'
+        text.font_size = 6
+
+        text = pyglet.text.Label('Attack:', x=20, y=25, batch=mainBatch, group=pyglet.graphics.OrderedGroup(12))
+        text.font_name = 'Sprite Comic'
+        text.font_size = 6
+
+        self.textArmor = pyglet.text.Label(str(self.unit.armor), x=70, y=10, batch=mainBatch, group=pyglet.graphics.OrderedGroup(12))
+        self.textArmor.font_name = 'Sprite Comic'
+        self.textArmor.font_size = 6
+
+        self.textAttack = pyglet.text.Label('0', x=70, y=25, batch=mainBatch, group=pyglet.graphics.OrderedGroup(12))
+        self.textAttack.font_name = 'Sprite Comic'
+        self.textAttack.font_size = 6
+
+        if self.unit.attack != None:
+            self.textAttack.text = str(self.unit.attack.damage)
+
         font.add_file('game/fonts/sprite_comic.ttf')
+
+    def update(self):
+        if self.unit.attack != None:
+            self.textAttack.text = str(self.unit.attack.damage)
+        elif self.textAttack.text != '0':
+            self.textAttack.text = '0'
+        
+        if self.unit.bonus.attack > 0:
+            self.textAttack.text = str(int(self.textAttack.text) + self.unit.bonus.attack)
+            self.textAttack.color = (50, 255, 50, 255)
+        else:
+            self.textAttack.color = (255, 255, 255, 255)
+        
+        
+        self.textArmor.text = str(self.unit.armor)
+        
+        if self.unit.bonus.armor > 0:
+            self.textArmor.text = str(int(self.textArmor.text) + self.unit.bonus.armor)
+            self.textArmor.color = (50, 255, 50, 255)
+        else:
+            self.textArmor.color = (255, 255, 255, 255)
+            
 
 class HudFrame(objects.Object):
     def __init__(self, mainBatch, positionX, positionY):
         super().__init__()
 
-        self.texture = pyglet.image.load('game/sprites/hud/unit-status-b.png')
+        self.texture = pyglet.image.load('game/sprites/hud/unit-status-c.png')
         self.sprite = pyglet.sprite.Sprite(self.texture, x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))   
         self.sprite.x = 20
        
