@@ -13,6 +13,8 @@ class Tileset():
             self.texture = textures.texture_load('game/sprites/ninja-shuriken-25x.png', 1, 4, 25, 25, 0.02, True)    
         elif self.textureName == 'shield':
             self.texture = pyglet.image.load('game/sprites/characters/shield.png')
+        elif self.textureName == 'shield-red':
+            self.texture = pyglet.image.load('game/sprites/characters/shield-red.png')
         elif self.textureName == 'arrow':
             self.texture = pyglet.image.load('game/sprites/characters/arrow.png')
         elif self.textureName == 'slash':

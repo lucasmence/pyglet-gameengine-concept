@@ -17,73 +17,56 @@ class Hud(objects.Object):
         hudFrame = HudFrame(mainBatch, 0, 0)
         self.frame = hudFrame
 
-        hudHealthBar = HudBar(mainBatch, 0, 50, 40)
+        hudHealthBar = HudBar(mainBatch, 0, 120, 28)
         self.bars.append(hudHealthBar)
 
-        hudEnergyBar = HudBar(mainBatch, 1, 50, 10)
+        hudEnergyBar = HudBar(mainBatch, 1, 120, 6)
         self.bars.append(hudEnergyBar)
 
-        hudAttackIcon = HudIcon(mainBatch, 'A', 500, 40, 'icon-attack.png')
+        hudAttackIcon = HudIcon(mainBatch, 'A', 109, 71, 'icon-attack.png')
         self.icons.append(hudAttackIcon)
 
-        hudQIcon = HudIcon(mainBatch, 'Q', 545, 40, 'icon-shuriken.png')
+        hudQIcon = HudIcon(mainBatch, 'Q', 154, 71, 'icon-shuriken.png')
         self.icons.append(hudQIcon)
 
-        hudWIcon = HudIcon(mainBatch, 'W', 590, 40, 'icon-shield-block.png')
+        hudWIcon = HudIcon(mainBatch, 'W', 199, 71, 'icon-shield-block.png')
         self.icons.append(hudWIcon)
 
-        hudEIcon = HudIcon(mainBatch, 'E', 635, 40, None)
+        hudEIcon = HudIcon(mainBatch, 'E', 244, 71, None)
         self.icons.append(hudEIcon)
 
-        hudRIcon = HudIcon(mainBatch, 'R', 680, 40, 'icon-steel-storm.png')
+        hudRIcon = HudIcon(mainBatch, 'R', 289, 71, 'icon-steel-storm.png')
         self.icons.append(hudRIcon)
 
+        hudUnitIcon = HudUnitIcon(mainBatch, 'unit', 28, 5, 'hud/icon-warrior.png')
+        self.icons.append(hudUnitIcon)
+
         font.add_file('game/fonts/sprite_comic.ttf')
-
-        text = pyglet.text.Label("A", x=515, y=20, batch=mainBatch)
-        text.font_name = 'Sprite Comic'
-        text.font_size = 8
-        self.texts.append(text)
-        
-        text = pyglet.text.Label("Q", x=560, y=20, batch=mainBatch)
-        text.font_name = 'Sprite Comic'
-        text.font_size = 8
-        self.texts.append(text)
-
-        text = pyglet.text.Label("W", x=605, y=20, batch=mainBatch)
-        text.font_name = 'Sprite Comic'
-        text.font_size = 8
-        self.texts.append(text)
-
-        text = pyglet.text.Label("E", x=650, y=20, batch=mainBatch)
-        text.font_name = 'Sprite Comic'
-        text.font_size = 8
-        self.texts.append(text)
-
-        text = pyglet.text.Label("R", x=695, y=20, batch=mainBatch)
-        text.font_name = 'Sprite Comic'
-        text.font_size = 8
-        self.texts.append(text)
-
-        text = pyglet.text.Label("HP: ", x=20 , y=50, batch=mainBatch)
-        text.font_name = 'Sprite Comic'
-        text.font_size = 8
-        self.texts.append(text)
-
-        text = pyglet.text.Label("EP: ", x=20 , y=15, batch=mainBatch)
-        text.font_name = 'Sprite Comic'
-        text.font_size = 8
-        self.texts.append(text)
 
 class HudFrame(objects.Object):
     def __init__(self, mainBatch, positionX, positionY):
         super().__init__()
 
-        self.texture = pyglet.image.load('game/sprites/frame-main.png')
-        self.sprite = pyglet.sprite.Sprite(self.texture, x=positionX, y=positionY, batch=mainBatch)   
+        self.texture = pyglet.image.load('game/sprites/hud/unit-status-b.png')
+        self.sprite = pyglet.sprite.Sprite(self.texture, x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))   
+        self.sprite.x = 20
        
         self.name = 'hud'
         self.type = 99
+
+class HudUnitIcon():
+    def __init__(self, mainBatch, key, positionX ,positionY, texture):
+
+        self.scale = 0.70
+
+        if (texture == None):
+            texture = 'hud/icon-model-circle.png'
+
+        self.key = key
+
+        self.texture = pyglet.image.load('game/sprites/'+texture)
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/'+texture), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))
+        self.sprite.update(scale=self.scale)
 
 class HudIcon():
     def __init__(self, mainBatch, key, positionX ,positionY, texture):
@@ -96,15 +79,15 @@ class HudIcon():
         self.key = key
 
         self.texture = pyglet.image.load('game/sprites/'+texture)
-        self.sprite = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/'+texture), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(0))
+        self.sprite = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/'+texture), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))
         self.sprite.update(scale=self.scale)
 
         self.textureLoad = pyglet.image.load('game/sprites/frame-load-icon.png')
-        self.spriteLoad = pyglet.sprite.Sprite(textures.texture_load('game/sprites/frame-load-icon.png', 1, 1, 0, 100, 1, False), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(1))
+        self.spriteLoad = pyglet.sprite.Sprite(textures.texture_load('game/sprites/frame-load-icon.png', 1, 1, 0, 100, 1, False), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(11))
         self.spriteLoad.opacity = 200
         self.spriteLoad.update(scale=0.80)
 
-        self.text = pyglet.text.Label('', x=positionX + 7, y=positionY + 10, batch=mainBatch, group=pyglet.graphics.OrderedGroup(2))
+        self.text = pyglet.text.Label('', x=positionX + 7, y=positionY + 10, batch=mainBatch, group=pyglet.graphics.OrderedGroup(12))
         self.text.font_name = 'Sprite Comic'
         self.text.font_size = 8
 
@@ -165,8 +148,8 @@ class HudBar():
             self.texture = pyglet.image.load('game/sprites/energybar.png')
         
         self.barType = barType
-        self.sprite = pyglet.sprite.Sprite(textures.texture_load('game/sprites/healthbar.png', 1, 1, 0, 100, 1, False), x=positionX, y=positionY, batch=mainBatch)
-        self.sprite.update(scale_y = 2, scale_x = 8)
+        self.sprite = pyglet.sprite.Sprite(textures.texture_load('game/sprites/healthbar.png', 1, 1, 0, 100, 1, False), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(11))
+        self.sprite.update(scale_y = 1, scale_x = 4)
         self.animation100 = self.sprite.image.from_image_sequence([self.texture.get_region(x=450,y=0,height=15,width=50)], 1, True)
         self.animation090 = self.sprite.image.from_image_sequence([self.texture.get_region(x=400,y=0,height=15,width=50)], 1, True)
         self.animation080 = self.sprite.image.from_image_sequence([self.texture.get_region(x=350,y=0,height=15,width=50)], 1, True)
@@ -182,9 +165,19 @@ class HudBar():
         self.sprite.image = self.animation100
         self.type = 99
 
-        self.text = pyglet.text.Label('', x=positionX + self.sprite.width + 10, y=positionY + 10 , batch=mainBatch, group=pyglet.graphics.OrderedGroup(2))
+        self.text = pyglet.text.Label('', x=positionX + self.sprite.width + 3, y=positionY + 3 , batch=mainBatch, group=pyglet.graphics.OrderedGroup(11))
         self.text.font_name = 'Sprite Comic'
-        self.text.font_size = 8
+        self.text.font_size = 6
+
+        label = pyglet.text.Label('',  x=positionX - 20 , y=positionY + 3, batch=mainBatch, group=pyglet.graphics.OrderedGroup(11))
+        label.font_name = 'Sprite Comic'
+        label.font_size = 6
+
+        if barType == 0:
+            label.text = 'HP:'
+        else:
+            label.text = 'EP:'
+
 
     def update(self, value, valueMax):
         self.text.text = str(round(value))

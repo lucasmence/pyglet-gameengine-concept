@@ -362,7 +362,7 @@ class SkillBuff(Skill):
         
     def loop(self, dt):
         super().loop(dt)
-        if self.duration < self.durationMax and self.activated == True:
+        if self.duration < self.durationMax and self.activated == True and self.caster.health > 0:
             self.duration += dt
             self.sprite.x = self.caster.sprite.x + self.missileStartPositionX
             self.sprite.y = self.caster.sprite.y + self.missileStartPositionY
@@ -439,7 +439,7 @@ class ShurikenCone(SkillLinear):
         for object in self.list:
             if object.range >= self.rangeMax and object.stage == 1 and object.situation == 0:
                 object.stage = 0
-                object.range = 0
+                object.range = self.rangeMax * 0.10
                 object.updateDirection(self.caster.sprite.x + int(self.caster.sprite.width / 2), self.caster.sprite.y + int(self.caster.sprite.height / 2))
 
         super().loop(dt)
@@ -448,10 +448,10 @@ class ShieldBlock(SkillBuff):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
         self.name = 'shieldBlock'
-        self.cooldown = 5
+        self.cooldown = 12
         self.cooldownTime = self.cooldown 
         self.castingTime = 0.10
-        self.durationMax = 3
+        self.durationMax = 5
         self.energy = 3
         self.scale = 1
         
@@ -472,6 +472,42 @@ class ShieldBlock(SkillBuff):
         activate = self.activated
         super().cast(x, y)
         if activate == False and self.activated == True:
+            self.caster.bonus.armor = self.caster.bonus.armor + 50
+    
+    def loop(self, dt):
+        activate = self.activated
+        super().loop(dt)
+        if activate == True and self.activated == False:
+            self.caster.bonus.armor = self.caster.bonus.armor - 50
+
+class BlackShield(SkillBuff):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'blackShield'
+        self.cooldown = 5
+        self.cooldownTime = self.cooldown 
+        self.castingTime = 0
+        self.durationMax = 3
+        self.energy = 3
+        self.scale = 1
+        
+        self.missileStartPositionX = 0
+        self.missileStartPositionY = 0
+       
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('shield', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('shield-red', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+    
+    def cast(self, x, y):
+        activate = self.activated
+        super().cast(x, y)
+        if activate == False and self.activated == True:
             self.caster.bonus.armor = self.caster.bonus.armor + 100
     
     def loop(self, dt):
@@ -484,7 +520,7 @@ class SteelStorm(SkillDoubleStep):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
         self.name = 'steelStorm'
-        self.cooldownStep = [10, 2]
+        self.cooldownStep = [20, 2]
         self.cooldownStepTime = [self.cooldownStep[0], self.cooldownStep[1]]
         self.cooldown = self.cooldownStep[0]
         self.cooldownTime = self.cooldown
@@ -497,7 +533,7 @@ class SteelStorm(SkillDoubleStep):
         self.damageLinear = 2
         self.shurikenCount = 5
         self.scale = 0.50
-        self.rangeMax = 700
+        self.rangeMax = 500
         self.speed = 500
         self.wave = False
         self.singleTarget = True

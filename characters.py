@@ -122,7 +122,7 @@ class SkeletonElite(BaseUnit):
         self.movementSpeed = 15
         self.minimumRange = 400
 
-        self.skillQ = abilities.ShieldBlock(self, self.manager)
+        self.skillQ = abilities.BlackShield(self, self.manager)
         self.attack = attackTypes.ArrowCone(self, self.manager) 
 
         self.sprite.image = self.model.texturePack.textureFiles['stand'][0].sprite

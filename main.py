@@ -50,13 +50,13 @@ def display_hud():
 def overworld_map_spawn():
     global mainBatch,  manager
 
-    for index in range(26):
-        manager.doodads.append(doodads.CastleBlock(mainBatch, 0, 125 + index * 25, manager))
-        manager.doodads.append(doodads.CastleBlock(mainBatch, 900, 125 + index * 25, manager))
-        manager.doodads.append(doodads.CastleBlock(mainBatch, 1175, 125 + index * 25, manager))
+    for index in range(29):
+        manager.doodads.append(doodads.CastleBlock(mainBatch, 0, 50 + index * 25, manager))
+        manager.doodads.append(doodads.CastleBlock(mainBatch, 900, 50 + index * 25, manager))
+        manager.doodads.append(doodads.CastleBlock(mainBatch, 1175, 50 + index * 25, manager))
 
     for index in range(48):
-        manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 100, manager))
+        manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 25, manager))
         manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 775, manager))
 
 def constants_load():
@@ -87,10 +87,10 @@ def overworld_units_spawn():
         enemiesList.append(enemy)
         manager.units.append(enemy)
     
-    #for index in range(1):
-    #    enemy = characters.SkeletonElite(mainBatch, 600 + index * 20, 400 + index * 20, 13, manager)
-    #    enemiesList.append(enemy)
-    #    manager.units.append(enemy)
+    for index in range(1):
+        enemy = characters.SkeletonElite(mainBatch, 600 + index * 20, 400 + index * 20, 13, manager)
+        enemiesList.append(enemy)
+        manager.units.append(enemy)
 
 def initialization():
 
