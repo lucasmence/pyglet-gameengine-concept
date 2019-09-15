@@ -154,6 +154,7 @@ class MissileEnchanter():
                 object = Missile(missile.caster, None, missile.speed)
                 object.spawn(missile.sprite.image, missile.sprite.x, missile.sprite.y, x, y, missile.sprite.scale, list, manager)
                 object.stage = missile.stage
+                object.damage = missile.damage
 
                 object.linearEnabled = True
 
@@ -449,6 +450,7 @@ class ShurikenCone(SkillLinear):
         if result == True:
             object = Missile(self.caster, None, self.speed)
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
+            object.damage = self.damage
             object.stage = 2
             missileEnchanter = MissileEnchanter()
             missileEnchanter.coneArea(object, 2, 45, x, y, self.list, self.manager)

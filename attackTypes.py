@@ -124,6 +124,7 @@ class ArrowCone(Attack):
         if result == True:
             object = abilities.Missile(self.caster, None, self.speed)
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
+            object.damage = self.damage
             missileEnchanter = abilities.MissileEnchanter()
             missileEnchanter.coneArea(object, 4, 30, x, y, self.list, self.manager)
             del missileEnchanter
