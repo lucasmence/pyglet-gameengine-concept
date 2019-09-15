@@ -24,6 +24,7 @@ class Attack(abilities.SkillLinear):
         self.sound = None
         self.texture = None
         self.scale = 1
+        self.attackType = True
         
     def cast(self, x, y, attackSpeed):
         if self.cooldown < attackSpeed:
@@ -45,11 +46,11 @@ class Slash(Attack):
         self.wave = True
         self.singleTarget = True
         self.castingTime = 0.50
-        self.criticalChance = 10
+        self.criticalChance = 10            
         self.icon = 'icon-attack'
         self.scale = 0.75
         self.title = 'Slash'
-        self.description = 'Deal ' + str(self.damage) +' damage each hit.'
+        self.description = 'Deal 1 damage each hit.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('slash', manager)
@@ -60,6 +61,10 @@ class Slash(Attack):
         tileset = tilesetEnchanter.load('slash', manager)
         del tilesetEnchanter
         self.texture = tileset.texture 
+    
+    def getTooltip(self):
+        self.description = 'Deal ' + str(self.damage) + ' damage each hit.'
+        return super().getTooltip()
 
 class Arrow(Attack):
     def __init__(self, caster, manager):

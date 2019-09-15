@@ -6,7 +6,12 @@ from game import floatingText
 class Damage():
     def __init__(self, damage, lifesteal, criticalChance, caster, target, manager):
 
-        damageValue = damage * (1 - ((target.armor + target.bonus.armor) / 100))
+        armor = (1 - ((target.armor + target.bonus.armor) / 100))
+        if armor < 0:
+            armor = 0
+        if damage < 0:
+            damage = 0
+        damageValue = damage * armor
 
         criticalValue = random.randint(1,100)
         critical = False

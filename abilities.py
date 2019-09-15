@@ -216,6 +216,7 @@ class Skill(objects.Object):
         self.icon = 'icon-unknown'
         self.title = 'An ability'
         self.description = 'No ability description available.'
+        self.attackType = False
 
         self.missileStartPositionX = int(self.caster.sprite.width / 2)
         self.missileStartPositionY = int(self.caster.sprite.height / 2)
@@ -227,6 +228,19 @@ class Skill(objects.Object):
     def destroy(self):
         for object in self.list:
             object.range = self.rangeMax
+    
+    def getTooltip(self):
+        labelSecond = ' seconds'
+        if self.cooldown < 2:
+            labelSecond = ' second'
+
+        labelCooldown = 'Cooldown: '
+        labelEnergy = 'Energy: ' + str(self.energy) + '\u2028'
+        if self.attackType == True:
+            labelCooldown = 'Attack Speed: '
+            labelEnergy = ''
+
+        return self.title + '\u2028' + labelCooldown + str(self.cooldown) + labelSecond + '\u2028' + labelEnergy + self.description
         
     def cast(self, x, y):
         if (self.cooldownTime >= self.cooldown and self.caster.energy >= self.energy):
@@ -553,7 +567,7 @@ class SteelStorm(SkillDoubleStep):
         self.icon = 'icon-steel-storm'
         self.title = 'Steelstorm'
         self.description = 'Summon 5 shuriken to turn around this unit dealing 3 damage each hit. '\
-                           'After a short time it can be reactivated to reelase into a linear area dealing 2 damage each hit.'
+                           'After a short time it can be reactivated to release into a linear area dealing 2 damage each hit.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('shuriken', manager)
