@@ -449,7 +449,7 @@ class ShurikenCone(SkillLinear):
         if result == True:
             object = Missile(self.caster, None, self.speed)
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
-            object.stage = 1
+            object.stage = 2
             missileEnchanter = MissileEnchanter()
             missileEnchanter.coneArea(object, 2, 45, x, y, self.list, self.manager)
             del missileEnchanter
@@ -458,9 +458,15 @@ class ShurikenCone(SkillLinear):
     
     def loop(self, dt):
         for object in self.list:
-            if object.range >= self.rangeMax and object.stage == 1 and object.situation == 0:
+            if object.range >= (self.rangeMax * 0.80) and object.stage == 2 and object.situation == 0:
+                object.stage = 1
+                object.speedX = object.speedX / 10
+                object.speedY = object.speedY / 10
+            elif object.range >= self.rangeMax and object.stage == 1 and object.situation == 0:
                 object.stage = 0
                 object.range = self.rangeMax * 0.10
+                object.speedX = object.speedX * 10
+                object.speedY = object.speedY * 10
                 object.updateDirection(self.caster.sprite.x + int(self.caster.sprite.width / 2), self.caster.sprite.y + int(self.caster.sprite.height / 2))
 
         super().loop(dt)
