@@ -416,6 +416,8 @@ class ShurikenCone(SkillLinear):
         self.autoGenerateMissile = False
         self.scale = 0.50
         self.icon = 'icon-shuriken'
+        self.title = 'Rake'
+        self.description = 'Release 4 shurikens at a cone area dealing 1 damage each and restoring 0.50 HP each hit.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('shuriken', manager)
@@ -460,6 +462,8 @@ class ShieldBlock(SkillBuff):
         self.energy = 3
         self.scale = 1
         self.icon = 'icon-shield-block'
+        self.title = 'Power Shield'
+        self.description = 'Increase your armor by 50 and your attack by 1 for 5 seconds.'
         
         self.missileStartPositionX = 0
         self.missileStartPositionY = 0
@@ -547,6 +551,9 @@ class SteelStorm(SkillDoubleStep):
         self.singleTarget = True
         self.criticalChance = 5
         self.icon = 'icon-steel-storm'
+        self.title = 'Steelstorm'
+        self.description = 'Summon 5 shuriken to turn around this unit dealing 3 damage each hit. '\
+                           'After a short time it can be reactivated to reelase into a linear area dealing 2 damage each hit.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('shuriken', manager)

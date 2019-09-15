@@ -176,7 +176,7 @@ def eventSkills(dt):
         playerIsAlive = False
 
     if playerIsAlive:
-        manager.update(dt)
+        manager.update(dt, mouseX, mouseY)
 
         for enemy in enemiesList:
             if player.health > 0:

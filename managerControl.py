@@ -18,7 +18,7 @@ class Manager():
         self.sounds = []
         self.tilesets = []
     
-    def update(self, dt):
+    def update(self, dt, x, y):
 
         for unitObject in self.units:
             unitObject.update(dt)
@@ -29,6 +29,7 @@ class Manager():
         for hudObject in self.huds:
             hudObject.update()
             for icon in hudObject.icons:
+                icon.showTooltip(x, y)
                 if icon.key == 'A' and hudObject.unit.attack != None:
                     icon.update(hudObject.unit.attack.cooldownTime, hudObject.unit.attack.cooldown)
                 if icon.key == 'Q' and hudObject.unit.skillQ != None:
@@ -39,6 +40,7 @@ class Manager():
                     icon.update(hudObject.unit.skillE.cooldownTime, hudObject.unit.skillE.cooldown)
                 elif icon.key == 'R' and hudObject.unit.skillR != None:
                     icon.update(hudObject.unit.skillR.cooldownTime, hudObject.unit.skillR.cooldown)
+                
             for bar in hudObject.bars:
                 if bar.barType == 0:
                     bar.update(hudObject.unit.health, hudObject.unit.healthMax + hudObject.unit.bonus.healthMax)

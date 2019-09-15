@@ -48,6 +48,8 @@ class Slash(Attack):
         self.criticalChance = 10
         self.icon = 'icon-attack'
         self.scale = 0.75
+        self.title = 'Slash'
+        self.description = 'Deal ' + str(self.damage) +' damage each hit.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('slash', manager)

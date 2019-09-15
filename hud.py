@@ -12,6 +12,7 @@ class Hud(objects.Object):
         self.texts = []
         self.frame = None
         self.unit = unit
+        self.tooltip = None
 
     def load(self, mainBatch):
         hudFrame = HudFrame(mainBatch, 0, 0)
@@ -145,6 +146,9 @@ class HudUnitIcon():
         self.sprite = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/hud/'+texture+'.png'), x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(10))
         self.sprite.update(scale=self.scale)
 
+    def showTooltip(self, positionX, positionY):
+        pass
+
 class HudIcon():
     def __init__(self, mainBatch, key, positionX ,positionY, texture, title, description):
 
@@ -170,6 +174,16 @@ class HudIcon():
 
         self.title = title
         self.description = description
+        self.tooltip = None
+        self.tooltipHud = None 
+        if self.title != None and self.description != None:
+            self.tooltipText = self.title + self.replicate((300 * 6) - (len(self.title) * 6)) + self.description
+            self.tooltip = pyglet.text.Label(self.tooltipText, multiline=True, x=350, y=110, batch=self.sprite.batch, group=pyglet.graphics.OrderedGroup(13), width=300)
+            self.tooltip.font_name = 'Sprite Comic'
+            self.tooltip.font_size = 6
+            self.tooltip.wrap = True
+            self.tooltipHud = pyglet.sprite.Sprite(pyglet.image.load('game/sprites/hud/tooltip.png'), x=350, y=20, batch=mainBatch, group=pyglet.graphics.OrderedGroup(12))
+            self.tooltipHud.opacity = 0
 
         self.animationLoad100 = self.spriteLoad.image.from_image_sequence([self.textureLoad.get_region(x=450,y=0,height=50,width=50)], 0.01, True)
         self.animationLoad090 = self.spriteLoad.image.from_image_sequence([self.textureLoad.get_region(x=400,y=0,height=50,width=50)], 0.01, True)
@@ -217,7 +231,25 @@ class HudIcon():
             self.spriteLoad.image = self.animationLoad090 
         elif percentage > 0.00:
             self.spriteLoad.image = self.animationLoad100 
+    
+    def replicate(self, count):
+        text = ''
+        for index in range(count):
+            text = text + ' '
+        
+        return text
 
+
+    def showTooltip(self, positionX, positionY):
+        if self.sprite != None and self.tooltip != None:
+            if positionX < (self.sprite.x + self.sprite.width) and (self.sprite.x) < positionX \
+            and positionY < (self.sprite.y + self.sprite.height) and (self.sprite.y) < positionY:
+                if self.tooltip.color != (255, 255, 255, 255): 
+                    self.tooltip.color = (255, 255, 255, 255)
+                    self.tooltipHud.opacity = 255
+            else:
+                self.tooltip.color = (255, 255, 255, 0)    
+                self.tooltipHud.opacity = 0
 
 class HudBar():
     def __init__(self, mainBatch, barType, positionX ,positionY):
