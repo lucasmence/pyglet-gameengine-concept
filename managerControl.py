@@ -17,6 +17,7 @@ class Manager():
         self.texturePacks = []
         self.sounds = []
         self.tilesets = []
+        self.terrain = []
     
     def update(self, dt, x, y):
 

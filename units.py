@@ -23,7 +23,7 @@ class Unit(objects.Object):
     def __init__(self, mainBatch, positionX, positionY, owner, manager):
         super().__init__()
         self.texture = textures.texture_load('game/sprites/dummy.png', 1, 2, 50, 50, 0.5, True)
-        self.sprite = pyglet.sprite.Sprite(self.texture, x=positionX, y=positionY, batch=mainBatch)
+        self.sprite = pyglet.sprite.Sprite(self.texture, x=positionX, y=positionY, batch=mainBatch, group=pyglet.graphics.OrderedGroup(1))
         self.model = models.Model(self.sprite)
         self.specialEffect = False
         self.pausedTime = 0.00

@@ -8,7 +8,7 @@ class Tileset():
         self.texture = None
 
         if self.textureName == 'castle-brick':
-            self.texture = pyglet.image.load('game/sprites/block50x50.png')
+            self.texture = pyglet.image.load('game/sprites/terrain/castle-brick.png')
         elif self.textureName == 'shuriken':
             self.texture = textures.texture_load('game/sprites/ninja-shuriken-25x.png', 1, 4, 25, 25, 0.02, True)    
         elif self.textureName == 'shield':
@@ -21,6 +21,10 @@ class Tileset():
             self.texture = pyglet.image.load('game/sprites/characters/slash.png')  
         elif self.textureName == 'dummy':
             self.texture = pyglet.image.load('game/sprites/characters/dummy.png')     
+        elif self.textureName == 'castle-ground':
+            self.texture = pyglet.image.load('game/sprites/terrain/castle-ground.png')
+        elif self.textureName == 'castle-terrain':
+            self.texture = pyglet.image.load('game/sprites/terrain/castle-terrain.png')
 
 class TilesetEnchanter():
     def load(self, textureName, manager):

@@ -34,3 +34,16 @@ class CastleBlock(Doodad):
         self.sprite.update(scale = 0.50)
        
         self.name = 'castle-brick'
+
+class Terrain(Doodad):
+    def __init__(self, terrain, positionX, positionY, mainBatch, manager):
+        super().__init__(mainBatch, positionX, positionY, manager)
+        
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        self.tileset = tilesetEnchanter.load(terrain, manager)
+        del tilesetEnchanter
+
+        self.sprite.image = self.tileset.texture
+               
+        self.name = 'terrain'
+

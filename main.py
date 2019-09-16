@@ -59,6 +59,8 @@ def overworld_map_spawn():
     for index in range(48):
         manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 25, manager))
         manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 775, manager))
+    
+    manager.terrain.append(doodads.Terrain('castle-terrain', 25, 50, mainBatch, manager))
 
 def constants_load():
     global started
