@@ -39,10 +39,40 @@ class Hero(BaseUnit):
 
         self.skillQ = abilities.ShurikenCone(self, self.manager)
         self.skillW = abilities.ShieldBlock(self, self.manager)
+        self.skillE = abilities.FlameSword(self, self.manager)
         self.skillR = abilities.SteelStorm(self, self.manager)
 
         self.attack = attackTypes.Slash(self, self.manager) 
         self.attack.damage = 2
+
+        self.health = self.healthMax + self.bonus.healthMax
+
+        self.sprite.image = self.model.texturePack.textureFiles['stand'][0].sprite
+
+class HeroRanger(BaseUnit):
+    def __init__(self, mainBatch, positionX, positionY, owner, manager):    
+        super().__init__(mainBatch, positionX, positionY, owner, manager)
+        
+        self.model.load('ranger', '', manager)
+
+        self.sprite.update(scale=1.00)
+        self.name = 'hero-ranger'
+        self.attackSpeed = 0.5
+        self.healthMax = 40
+        self.healthRegeneration = 0.1
+        self.energyMax = 30
+        self.energy = self.energyMax
+        self.energyRegeneration = 0.7
+        self.armor = 5
+        self.movementSpeed = 180
+        self.icon = 'icon-ranger'
+
+        self.skillQ = abilities.ArrowVolley(self, self.manager)
+        self.skillW = abilities.SinisterAura(self, self.manager)
+        self.skillE = abilities.SoulArrows(self, self.manager)
+        self.skillR = abilities.Shockwave(self, self.manager)
+
+        self.attack = attackTypes.ArrowRanger(self, self.manager) 
 
         self.health = self.healthMax + self.bonus.healthMax
 
@@ -160,6 +190,7 @@ class Boss(BaseUnit):
 
         self.skillQ = abilities.ShurikenCone(self, self.manager)
         self.skillW = abilities.ShieldBlock(self, self.manager)
+        self.skillE = abilities.Shockwave(self, self.manager)
         self.skillR = abilities.SteelStorm(self, self.manager)
         self.skillQ.cooldown = 3.00
         self.skillR.cooldownStep = [5.00, 3.00]
@@ -188,3 +219,6 @@ class Boss(BaseUnit):
             
             if (self.skillR.cooldownTime >= self.skillR.cooldown):
                 self.cast(self.R, self.moveX, self.moveY)  
+            
+            if (self.skillE.cooldownTime >= self.skillE.cooldown):
+                self.cast(self.E, self.moveX, self.moveY)  

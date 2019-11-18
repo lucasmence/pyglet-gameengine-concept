@@ -15,10 +15,28 @@ class Tileset():
             self.texture = pyglet.image.load('game/sprites/characters/shield.png')
         elif self.textureName == 'shield-red':
             self.texture = pyglet.image.load('game/sprites/characters/shield-red.png')
+        elif self.textureName == 'shield-orange':
+            self.texture = pyglet.image.load('game/sprites/characters/shield-orange.png')
         elif self.textureName == 'arrow':
             self.texture = pyglet.image.load('game/sprites/characters/arrow.png')
+        elif self.textureName == 'arrow-ranger':
+            self.texture = pyglet.image.load('game/sprites/characters/arrow-ranger.png')
+        elif self.textureName == 'fire':
+            self.texture = pyglet.image.load('game/sprites/characters/fire.png')
+        elif self.textureName == 'shockwave':
+            self.texture = pyglet.image.load('game/sprites/characters/shockwave.png')
         elif self.textureName == 'slash':
             self.texture = pyglet.image.load('game/sprites/characters/slash.png')  
+        elif self.textureName == 'slash-magenta':
+            self.texture = pyglet.image.load('game/sprites/characters/slash-magenta.png')  
+        elif self.textureName == 'slash-shockwave':
+            self.texture = textures.texture_load('game/sprites/characters/slash-shockwave.png', 1, 4, 64, 64, 0.02, True)    
+        elif self.textureName == 'slash-fire':
+            self.texture = textures.texture_load('game/sprites/characters/slash-fire.png', 1, 4, 64, 64, 0.02, True)    
+        elif self.textureName == 'shield-fire':
+            self.texture = textures.texture_load('game/sprites/characters/shield-fire.png', 1, 4, 50, 50, 0.10, True)    
+        elif self.textureName == 'shield-fire-soul':
+            self.texture = textures.texture_load('game/sprites/characters/shield-fire-soul.png', 1, 4, 50, 50, 0.05, True)    
         elif self.textureName == 'dummy':
             self.texture = pyglet.image.load('game/sprites/characters/dummy.png')     
         elif self.textureName == 'castle-ground':
@@ -300,6 +318,73 @@ class TexturePack():
                            Texture(200, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite),
                            Texture(265, 0, 50, 50, 0.15, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite),
                            Texture(328, 0, 50, 50, 1.00, 'game/sprites/characters/skeleton-elite/skeleton-death.png', sprite)]
+            }
+        
+        if self.textureName == 'ranger':
+            self.leftRightOnly = True
+            self.textureFiles = {
+                'stand' : [Texture(  7, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-stand.png', sprite),
+                           Texture( 71, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-stand.png', sprite),
+                           Texture(135, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-stand.png', sprite),
+                           Texture(199, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-stand.png', sprite),
+                           Texture(263, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-stand.png', sprite),
+                           Texture(327, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-stand.png', sprite),
+                           Texture(391, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-stand.png', sprite)],
+
+                'walk-left' : [Texture(  0, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite),
+                               Texture( 71, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite),
+                               Texture(135, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite),
+                               Texture(199, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite),
+                               Texture(263, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite),
+                               Texture(327, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite),
+                               Texture(391, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite),
+                               Texture(455, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite),
+                               Texture(519, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-left.png', sprite)],
+
+                'walk-right' : [Texture(  0, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite),
+                                Texture( 71, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite),
+                                Texture(135, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite),
+                                Texture(199, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite),
+                                Texture(263, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite),
+                                Texture(327, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite),
+                                Texture(391, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite),
+                                Texture(455, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite),
+                                Texture(519, 0, 50, 50, 0.03, 'game/sprites/characters/ranger/ranger-move-right.png', sprite)],
+
+                'attack-right' : [Texture(  7, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture( 71, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(136, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(199, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(265, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(335, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(397, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(458, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(520, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(580, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(645, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(710, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite),
+                                  Texture(775, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-right.png', sprite)],
+
+                'attack-left' : [Texture(  7, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture( 71, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(136, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(199, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(260, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(320, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(385, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(452, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(520, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(580, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(645, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(710, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite),
+                                 Texture(770, 0, 55, 50, 0.01, 'game/sprites/characters/ranger/ranger-attack-left.png', sprite)],
+
+                'death' : [Texture(  7, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-death.png', sprite),
+                           Texture( 72, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-death.png', sprite),
+                           Texture(135, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-death.png', sprite),
+                           Texture(200, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-death.png', sprite),
+                           Texture(265, 0, 50, 50, 0.15, 'game/sprites/characters/ranger/ranger-death.png', sprite),
+                           Texture(328, 0, 50, 50, 1.00, 'game/sprites/characters/ranger/ranger-death.png', sprite)]
             }
 
         if self.textureName == 'dummy':

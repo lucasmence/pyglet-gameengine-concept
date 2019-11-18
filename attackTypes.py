@@ -66,6 +66,38 @@ class Slash(Attack):
         self.description = 'Deal ' + str(self.damage) + ' damage each hit.'
         return super().getTooltip()
 
+class SlashFire(Attack):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'slash-fire'
+        self.cooldown = 0.5
+        self.rangeMax = 150
+        self.speed = 600
+        self.damage = 2
+        self.energy = 0
+        self.wave = True
+        self.singleTarget = False
+        self.castingTime = 0.50
+        self.criticalChance = 10            
+        self.icon = 'icon-attack-fire'
+        self.scale = 0.75
+        self.title = 'Heat Wave'
+        self.description = 'Releases a wave that deal 2 damage each hit.'
+
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('spark', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('slash-fire', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture 
+    
+    def getTooltip(self):
+        self.description = 'Releases a wave that deal ' + str(self.damage) + ' damage each hit.'
+        return super().getTooltip()
+
 class Arrow(Attack):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
@@ -80,6 +112,8 @@ class Arrow(Attack):
         self.castingTime = 0.50
         self.criticalChance = 15
         self.scale = 1
+        self.title = "Arrow"
+        self.description = 'Deal 2 damage each hit.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('arrow', manager)
@@ -90,6 +124,38 @@ class Arrow(Attack):
         tileset = tilesetEnchanter.load('arrow', manager)
         del tilesetEnchanter
         self.texture = tileset.texture
+
+class ArrowRanger(Attack):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'arrow-ranger'
+        self.icon = 'icon-arrow-ranger'
+        self.cooldown = 0.5
+        self.rangeMax = 550
+        self.speed = 550
+        self.damage = 2
+        self.energy = 0
+        self.wave = False
+        self.singleTarget = True
+        self.castingTime = 0.50
+        self.criticalChance = 30
+        self.scale = 1
+        self.title = "Arrow"
+        self.description = 'Deal 2 damage each hit. High critical rate.'
+
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('arrow', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('arrow-ranger', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+    
+    def getTooltip(self):
+        self.description = 'Deal ' + str(self.damage) + ' damage each hit. High critical rate.'
+        return super().getTooltip()
 
 class ArrowCone(Attack):
     def __init__(self, caster, manager):

@@ -18,6 +18,7 @@ class Bonus():
         self.energyRegeneration = 0
         self.critical = 0
         self.attackSpeed = 0   
+        self.lifesteal = 0  
 
 class Unit(objects.Object):
     def __init__(self, mainBatch, positionX, positionY, owner, manager):

@@ -13,6 +13,12 @@ class Sound():
             self.file = pyglet.media.load('game/sounds/shield.wav', streaming=False) 
         elif self.name == 'arrow':
             self.file = pyglet.media.load('game/sounds/arrow.wav', streaming=False)
+        elif self.name == 'fire':
+            self.file = pyglet.media.load('game/sounds/fire.wav', streaming=False)
+        elif self.name == 'shockwave':
+            self.file = pyglet.media.load('game/sounds/shockwave.wav', streaming=False)
+        elif self.name == 'spark':
+            self.file = pyglet.media.load('game/sounds/spark.wav', streaming=False)
            
 class SoundEnchanter():
     def load(self, name, manager):

@@ -36,17 +36,47 @@ def display_fps_show():
 def display_hud():
     font.add_file('game/fonts/sprite_comic.ttf')
 
-    global text_intro
-    text_intro = pyglet.text.Label("Press space to start", x=550 , y=400)
-    text_intro.font_name = 'Sprite Comic'
-    text_intro.anchor_x = "center"
-    text_intro.anchor_y = "center"
-    text_intro.font_size = 40
+    global text_intro_menu
+    text_intro_menu = pyglet.text.Label("Adventure Simulator Pilot", x=550 , y=700)
+    text_intro_menu.font_name = 'Sprite Comic'
+    text_intro_menu.anchor_x = "center"
+    text_intro_menu.anchor_y = "center"
+    text_intro_menu.font_size = 40
 
-    global mainBatch,  manager
-    hudScreen = hud.Hud(mainBatch, player)
-    manager.huds.append(hudScreen)
-    hudScreen.load(mainBatch)
+    global text_intro_class_1
+    text_intro_class_1 = pyglet.text.Label("Press Z to select the GLADIATOR", x=550 , y=500)
+    text_intro_class_1.font_name = 'Sprite Comic'
+    text_intro_class_1.anchor_x = "center"
+    text_intro_class_1.anchor_y = "center"
+    text_intro_class_1.font_size = 30
+
+    global text_intro_class_2
+    text_intro_class_2 = pyglet.text.Label("Press X to select the RANGER", x=550 , y=400)
+    text_intro_class_2.font_name = 'Sprite Comic'
+    text_intro_class_2.anchor_x = "center"
+    text_intro_class_2.anchor_y = "center"
+    text_intro_class_2.font_size = 30
+
+    global text_intro_class_current
+    text_intro_class_current = pyglet.text.Label("Current class: GLADIATOR", x=550 , y=300)
+    text_intro_class_current.font_name = 'Sprite Comic'
+    text_intro_class_current.anchor_x = "center"
+    text_intro_class_current.anchor_y = "center"
+    text_intro_class_current.font_size = 30
+
+    global text_intro_start
+
+    text_intro_start = pyglet.text.Label("Press SPACE to start", x=550 , y=100)
+    text_intro_start.font_name = 'Sprite Comic'
+    text_intro_start.anchor_x = "center"
+    text_intro_start.anchor_y = "center"
+    text_intro_start.font_size = 40
+
+def display_hud_player():
+        global mainBatch,  manager
+        hudScreen = hud.Hud(mainBatch, player)
+        manager.huds.append(hudScreen)
+        hudScreen.load(mainBatch)
 
 def overworld_map_spawn():
     global mainBatch,  manager
@@ -60,22 +90,30 @@ def overworld_map_spawn():
         manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 25, manager))
         manager.doodads.append(doodads.CastleBlock(mainBatch, index * 25, 775, manager))
     
-    manager.terrain.append(doodads.Terrain('castle-terrain', 25, 50, mainBatch, manager))
+    #manager.terrain.append(doodads.Terrain('castle-terrain', 25, 50, mainBatch, manager))
 
 def constants_load():
     global started
     started = False
 
-    global mouseX , mouseY
+    global mouseX , mouseY, starterCharacter
     mouseX = 0
     mouseY = 0
+    starterCharacter = 0
+    
 
 def overworld_units_spawn():
-    global player, mainBatch, enemiesList, manager, step
+    global player, mainBatch, enemiesList, manager, step, starterCharacter
 
     step = 0
 
-    player = characters.Hero(mainBatch, 200, 200, 1, manager)
+    player = None
+
+    if starterCharacter == 0:
+        player = characters.Hero(mainBatch, 200, 200, 1, manager)
+    elif starterCharacter == 1:
+        player = characters.HeroRanger(mainBatch, 200, 200, 1, manager)
+
     manager.units.append(player)    
 
     enemiesList = []
@@ -110,6 +148,7 @@ def overworld_units_spawn():
 
     music = pyglet.media.Player()
     music.queue(pyglet.media.load('game/sounds/stage.wav'))
+    music.queue(pyglet.media.load('game/sounds/stage2.wav'))
     music.loop = True
     music.volume = 0.40
     music.queue(pyglet.media.load('game/sounds/boss.wav'))
@@ -120,7 +159,6 @@ def initialization():
     display_window_preload()
     display_fps_show()
     overworld_map_spawn()  
-    overworld_units_spawn()
     display_hud()
     constants_load() 
 
@@ -135,7 +173,11 @@ def on_draw():
         mainBatch.draw()
         music.play()
     else:
-        text_intro.draw()
+        text_intro_start.draw()
+        text_intro_class_1.draw()
+        text_intro_class_2.draw()
+        text_intro_class_current.draw()
+        text_intro_menu.draw()
     display_fps.draw()
 
 @window.event
@@ -155,13 +197,22 @@ def on_mouse_motion(x, y, dx, dy):
 
 @window.event
 def on_key_press(symbol, modifiers):
-    global player, mouseX, mouseY
-    player.on_key_press(symbol, modifiers, mouseX, mouseY)  
-
-    global  started
-    if symbol == key.SPACE:
-        if not started:
+    global  started, starterCharacter
+    if not started:
+        if symbol == key.Z:
+            starterCharacter = 0
+            text_intro_class_current.text = "Current class: GLADIATOR"
+        elif symbol == key.X:
+            starterCharacter = 1
+            text_intro_class_current.text = "Current class: RANGER"
+        if symbol == key.SPACE:
+            overworld_units_spawn()
+            display_hud_player()
             started = True
+    else:
+        global player, mouseX, mouseY
+        player.on_key_press(symbol, modifiers, mouseX, mouseY)  
+            
 
 @window.event
 def on_key_release(symbol, modifiers):
@@ -192,12 +243,25 @@ def eventSkills(dt):
     if step == 0 and len(enemiesList) == 0:
         step = 1
         music.next_source()
+        for index in range(2):
+            enemy = characters.SkeletonElite(mainBatch, 200 + index * 150, 100 + index * 200, 13, manager)
+            enemiesList.append(enemy)
+            manager.units.append(enemy)
+
+        for index in range(5):
+            enemy = characters.SkeletonWarrior(mainBatch, 300 + index * 100, 500 + index * 20, 13, manager)
+            enemiesList.append(enemy)
+            manager.units.append(enemy)
+
+    if step == 1 and len(enemiesList) == 0:
+        step = 2
+        music.next_source()
         for index in range(1):
             enemy = characters.Boss(mainBatch, 900 + index * 20, 500 + index * 20, 13, manager)
             enemiesList.append(enemy)
             manager.units.append(enemy)
-    elif step == 1 and len(enemiesList) == 0:
-        step = 2
+    elif step == 2 and len(enemiesList) == 0:
+        step = 3
         music.loop = False
         music.next_source()   
 

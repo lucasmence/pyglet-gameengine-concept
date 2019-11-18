@@ -21,6 +21,7 @@ class Damage():
             damageValue = damageValue * 2
 
         target.health -= damageValue
+        lifesteal += (damageValue * caster.bonus.lifesteal)
         if lifesteal < 0:
             lifesteal = damageValue * (lifesteal * -1)
             criticalHeal = critical

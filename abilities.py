@@ -422,7 +422,7 @@ class ShurikenCone(SkillLinear):
         self.rangeMax = 200
         self.speed = 550
         self.damage = 1
-        self.lifesteal = 0.50
+        self.lifesteal = 1.25
         self.energy = 2
         self.wave = False
         self.singleTarget = True
@@ -432,7 +432,7 @@ class ShurikenCone(SkillLinear):
         self.scale = 0.50
         self.icon = 'icon-shuriken'
         self.title = 'Rake'
-        self.description = 'Release 4 shurikens at a cone area dealing 1 damage each and restoring 0.50 HP each hit.'
+        self.description = 'Release 4 shurikens at a cone area dealing 1 damage each and restoring 1.25 HP each hit.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('shuriken', manager)
@@ -513,6 +513,207 @@ class ShieldBlock(SkillBuff):
         if activate == True and self.activated == False:
             self.caster.bonus.armor = self.caster.bonus.armor - 50
             self.caster.bonus.attack = self.caster.bonus.attack - 1
+
+class FlameSword(SkillBuff):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'flameSword'
+        self.cooldown = 30
+        self.cooldownTime = self.cooldown 
+        self.castingTime = 0.00
+        self.durationMax = 10
+        self.energy = 5
+        self.scale = 1
+        self.icon = 'icon-attack-fire'
+        self.title = 'Flame Sword'
+        self.description = 'Changes your attack type to a fire wave attack that deals 2 damage at linear area and increase your HP regeneration by 1 per second by 10 seconds.'
+        
+        self.missileStartPositionX = 0
+        self.missileStartPositionY = 0
+       
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('fire', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('shield-fire', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+    
+    def cast(self, x, y):
+        from game import attackTypes
+
+        activate = self.activated
+        super().cast(x, y)
+        if activate == False and self.activated == True:
+            self.attackType = self.caster.attack
+            self.caster.bonus.healthRegeneration = self.caster.bonus.healthRegeneration + 1
+            self.caster.attack = attackTypes.SlashFire(self.caster, self.manager) 
+    
+    def loop(self, dt):
+        activate = self.activated
+        super().loop(dt)
+        if activate == True and self.activated == False:
+            for object in self.caster.attack.list:
+                self.manager.missiles.remove(object)
+                del object
+            del self.caster.attack
+
+            self.caster.bonus.healthRegeneration = self.caster.bonus.healthRegeneration - 1
+            self.caster.attack = self.attackType
+
+class SinisterAura(SkillBuff):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'sinisterAura'
+        self.cooldown = 4
+        self.cooldownTime = self.cooldown 
+        self.castingTime = 0.00
+        self.durationMax = 2
+        self.energy = 3
+        self.scale = 1
+        self.icon = 'icon-sinister-aura'
+        self.title = 'Sinister Aura'
+        self.description = 'Increase your movement speed by 100 for 2 seconds.'
+        
+        self.missileStartPositionX = 0
+        self.missileStartPositionY = 0
+       
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('shield', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('shield-orange', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+    
+    def cast(self, x, y):
+        activate = self.activated
+        super().cast(x, y)
+        if activate == False and self.activated == True:
+            self.caster.bonus.movementSpeed = self.caster.bonus.movementSpeed + 100
+    
+    def loop(self, dt):
+        activate = self.activated
+        super().loop(dt)
+        if activate == True and self.activated == False:
+            self.caster.bonus.movementSpeed = self.caster.bonus.movementSpeed - 100
+
+class SoulArrows(SkillBuff):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'sinisterAura'
+        self.cooldown = 15
+        self.cooldownTime = self.cooldown 
+        self.castingTime = 0.00
+        self.durationMax = 5
+        self.energy = 5
+        self.scale = 1
+        self.icon = 'icon-fire-soul'
+        self.title = 'Soul Arrows'
+        self.description = 'Increase your basic attack by 1 and grants 50% lifesteal for 5 seconds.'
+        
+        self.missileStartPositionX = 0
+        self.missileStartPositionY = 0
+       
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('fire', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('shield-fire-soul', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+    
+    def cast(self, x, y):
+        activate = self.activated
+        super().cast(x, y)
+        if activate == False and self.activated == True:
+            self.caster.bonus.attack = self.caster.bonus.attack + 1
+            self.caster.bonus.lifesteal = self.caster.bonus.lifesteal + 0.5
+    
+    def loop(self, dt):
+        activate = self.activated
+        super().loop(dt)
+        if activate == True and self.activated == False:
+            self.caster.bonus.attack = self.caster.bonus.attack - 1
+            self.caster.bonus.lifesteal = self.caster.bonus.lifesteal - 0.5
+
+class ArrowVolley(SkillLinear):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+        self.name = 'arrow-volley'
+        self.cooldown = 5
+        self.cooldownTime = self.cooldown 
+        self.rangeMax = 1000
+        self.speed = 300
+        self.damage = 1
+        self.energy = 3
+        self.wave = False
+        self.singleTarget = True
+        self.castingTime = 0.50
+        self.criticalChance = 5
+        self.autoGenerateMissile = False
+        self.icon = 'icon-arrow-volley'
+        self.title = 'Volley'
+        self.description = 'Releases a wave of volley of 10 arrows at a large cone area dealing 1 damage each hit.'
+
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('arrow', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('arrow-ranger', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture
+
+        self.scale = 1
+    
+    def cast(self, x, y):
+        result = super().cast(x, y)
+
+        if result == True:
+            object = Missile(self.caster, None, self.speed)
+            object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
+            object.damage = self.damage
+            missileEnchanter = MissileEnchanter()
+            missileEnchanter.coneArea(object, 5, 50, x, y, self.list, self.manager)
+            del missileEnchanter
+
+        return result
+
+class Shockwave(SkillLinear):
+    def __init__(self, caster, manager):
+        super().__init__(caster, manager)
+
+        self.name = 'shuriken'
+        self.cooldown = 10
+        self.cooldownTime = self.cooldown
+        self.rangeMax = 1000
+        self.speed = 200
+        self.damage = 6
+        self.energy = 7
+        self.scale = 1
+        self.wave = True
+        self.singleTarget = False
+        self.icon = 'icon-shockwave'
+        self.title = 'Shockwave'
+        self.description = 'Sends a linear wave that deals 6 damage to each enemy unit.'
+
+        soundEnchanter = sounds.SoundEnchanter()
+        sound = soundEnchanter.load('shockwave', manager)
+        del soundEnchanter
+        self.sound = sound.file
+
+        tilesetEnchanter = texturePacks.TilesetEnchanter()
+        tileset = tilesetEnchanter.load('slash-shockwave', manager)
+        del tilesetEnchanter
+        self.texture = tileset.texture    
 
 class BlackShield(SkillBuff):
     def __init__(self, caster, manager):
