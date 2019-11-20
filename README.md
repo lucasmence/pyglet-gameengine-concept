@@ -1,5 +1,7 @@
 # gameengine-python
 
+Discontinued project
+
 Using pyglet
 
 check gameplay here:
