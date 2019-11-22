@@ -682,7 +682,7 @@ class ArrowVolley(SkillLinear):
             object.spawn(self.texture, self.caster.sprite.x + self.missileStartPositionX, self.caster.sprite.y + self.missileStartPositionY, x, y, self.scale, self.list, self.manager)
             object.damage = self.damage
             missileEnchanter = MissileEnchanter()
-            missileEnchanter.coneArea(object, 5, 50, x, y, self.list, self.manager)
+            missileEnchanter.coneArea(object, 5, 15, x, y, self.list, self.manager)
             del missileEnchanter
 
         return result
