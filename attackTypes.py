@@ -130,10 +130,10 @@ class ArrowRanger(Attack):
         super().__init__(caster, manager)
         self.name = 'arrow-ranger'
         self.icon = 'icon-arrow-ranger'
-        self.cooldown = 0.5
-        self.rangeMax = 550
-        self.speed = 550
-        self.damage = 2
+        self.cooldown = 1.50
+        self.rangeMax = 1000
+        self.speed = 600
+        self.damage = 4
         self.energy = 0
         self.wave = False
         self.singleTarget = True
@@ -141,7 +141,7 @@ class ArrowRanger(Attack):
         self.criticalChance = 30
         self.scale = 1
         self.title = "Arrow"
-        self.description = 'Deal 2 damage each hit. High critical rate.'
+        self.description = 'Deal 4 damage each hit. High critical rate.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('arrow', manager)

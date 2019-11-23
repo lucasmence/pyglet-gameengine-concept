@@ -57,14 +57,14 @@ class HeroRanger(BaseUnit):
 
         self.sprite.update(scale=1.00)
         self.name = 'hero-ranger'
-        self.attackSpeed = 0.5
-        self.healthMax = 40
+        self.attackSpeed = 1.50
+        self.healthMax = 30
         self.healthRegeneration = 0.1
-        self.energyMax = 30
+        self.energyMax = 20
         self.energy = self.energyMax
-        self.energyRegeneration = 0.7
-        self.armor = 5
-        self.movementSpeed = 180
+        self.energyRegeneration = 0.85
+        self.armor = 0
+        self.movementSpeed = 200
         self.icon = 'icon-ranger'
 
         self.skillQ = abilities.ArrowVolley(self, self.manager)
@@ -180,13 +180,15 @@ class Boss(BaseUnit):
         self.sprite.update(scale=1.00)
         self.name = 'boss'
         self.attackSpeed = 0.3
-        self.healthMax = 50
+        self.healthMax = 70
         self.healthRegeneration = 0.2
         self.energyMax = 20
-        self.energyRegeneration = 5.00
-        self.armor = 10
+        self.energyRegeneration = 10.00
+        self.armor = 25
         self.movementSpeed = 100
         self.icon = 'icon-warrior'
+        self.stage = 0
+        self.range = 100
 
         self.skillQ = abilities.ShurikenCone(self, self.manager)
         self.skillW = abilities.ShieldBlock(self, self.manager)
@@ -207,8 +209,22 @@ class Boss(BaseUnit):
         distance = collision.distance(self.diferenceX, self.diferenceY)
         super().update(dt)
 
+        if ((self.health <= 20) and (self.stage == 0)): 
+            self.stage = 1
+            self.attack = attackTypes.SlashFire(self, self.manager) 
+            self.attack.damage = 5
+            self.range = 200
+            self.armor = 75
+            self.healthRegeneration = 10.00
+            self.movementSpeed = 50
+            self.skillR.cooldownStep = [3.00, 3.00]
+            self.skillR.rangeMax = 800
+        elif ((self.health >= 70) and (self.stage == 1)):
+            self.healthRegeneration = 0.3
+            self.stage = 2
+
         if  (self.diferenceX != 0) and (self.diferenceY != 0):
-            if (collision.distance(self.diferenceX, self.diferenceY) <= 100):
+            if (collision.distance(self.diferenceX, self.diferenceY) <= self.range):
                 self.cast(self.A, self.moveX, self.moveY)  
             
             if (self.skillQ.cooldownTime >= self.skillQ.cooldown) and (collision.distance(self.diferenceX, self.diferenceY) <= 200):
@@ -222,3 +238,4 @@ class Boss(BaseUnit):
             
             if (self.skillE.cooldownTime >= self.skillE.cooldown):
                 self.cast(self.E, self.moveX, self.moveY)  
+            

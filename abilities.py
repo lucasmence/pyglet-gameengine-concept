@@ -571,7 +571,7 @@ class SinisterAura(SkillBuff):
         self.cooldownTime = self.cooldown 
         self.castingTime = 0.00
         self.durationMax = 2
-        self.energy = 3
+        self.energy = 4
         self.scale = 1
         self.icon = 'icon-sinister-aura'
         self.title = 'Sinister Aura'
@@ -606,15 +606,15 @@ class SoulArrows(SkillBuff):
     def __init__(self, caster, manager):
         super().__init__(caster, manager)
         self.name = 'sinisterAura'
-        self.cooldown = 15
+        self.cooldown = 20
         self.cooldownTime = self.cooldown 
         self.castingTime = 0.00
-        self.durationMax = 5
-        self.energy = 5
+        self.durationMax = 6
+        self.energy = 7
         self.scale = 1
         self.icon = 'icon-fire-soul'
         self.title = 'Soul Arrows'
-        self.description = 'Increase your basic attack by 1 and grants 50% lifesteal for 5 seconds.'
+        self.description = 'Increase your basic attack by 1 and grants 50% lifesteal for 6 seconds.'
         
         self.missileStartPositionX = 0
         self.missileStartPositionY = 0
@@ -652,7 +652,7 @@ class ArrowVolley(SkillLinear):
         self.rangeMax = 1000
         self.speed = 300
         self.damage = 1
-        self.energy = 3
+        self.energy = 5
         self.wave = False
         self.singleTarget = True
         self.castingTime = 0.50
@@ -692,18 +692,18 @@ class Shockwave(SkillLinear):
         super().__init__(caster, manager)
 
         self.name = 'shuriken'
-        self.cooldown = 10
+        self.cooldown = 15
         self.cooldownTime = self.cooldown
         self.rangeMax = 1000
-        self.speed = 200
-        self.damage = 6
-        self.energy = 7
+        self.speed = 175
+        self.damage = 8
+        self.energy = 10
         self.scale = 1
         self.wave = True
         self.singleTarget = False
         self.icon = 'icon-shockwave'
         self.title = 'Shockwave'
-        self.description = 'Sends a linear wave that deals 6 damage to each enemy unit.'
+        self.description = 'Sends a linear wave that deals 8 damage to each enemy unit.'
 
         soundEnchanter = sounds.SoundEnchanter()
         sound = soundEnchanter.load('shockwave', manager)
