@@ -1,4 +1,4 @@
-# gameengine-python
+# pyglet-gameengine-concept
 
 ![screenshot01](https://user-images.githubusercontent.com/24687357/69391971-2f45bc00-0cb3-11ea-9bf7-089c6ed2a2f4.png)
 
